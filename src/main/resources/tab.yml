@@ -1,0 +1,13 @@
+# 是否启用计分板
+enabled: true
+
+# Tab 页面的头部内容
+header: |
+  &6欢迎 &e%player% &6来到服务器！
+  &7在线玩家: &a%online% &7/ &a%maxplayers%
+
+# Tab 页面的底部内容
+footer: |
+  &7当前世界: &a%world%
+  &7你的位置: &a%x%, %y%, %z%
+  &7金钱: &a%money% &7| 时间: &a%time%

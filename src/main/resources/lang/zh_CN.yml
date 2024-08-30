@@ -1,0 +1,20 @@
+{
+  "plugin_enabled": "插件启用成功！",
+  "plugin_disabled": "插件已禁用",
+  "error_message": "发生错误: {error}",
+  "plugin_success": "插件启动成功！",
+  "command_only_player": "&c该命令只能由玩家使用！",
+  "teleport_success": "&a你已传送到上一次死亡地点",
+  "no_death_location": "&c没有找到死亡地点",
+  "log_teleport_success": "{player} 已传送到死亡地点: {location}",
+  "log_death_location_recorded": "记录 {player} 的死亡地点: {location}",
+  "no_permission": "&c你没有权限使用这个命令！",
+  "fly_toggle": "&a飞行模式已{status}！",
+  "fly_enabled": "开启",
+  "fly_disabled": "关闭",
+  "gm_specify_mode": "请指定游戏模式：0, 1, 2, 3, survival, creative, adventure, spectator",
+  "gm_invalid_mode": "无效的游戏模式！",
+  "gm_console_no_self_target": "控制台不能指定自己为目标，请指定一个玩家！",
+  "gm_mode_changed": "游戏模式已更改为: {mode}",
+  "gm_target_mode_changed": "{target} 的游戏模式已更改为: {mode}"
+}
