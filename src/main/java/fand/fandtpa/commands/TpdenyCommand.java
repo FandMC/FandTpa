@@ -8,7 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class TpdenyCommand implements CommandExecutor {
@@ -18,19 +20,17 @@ public class TpdenyCommand implements CommandExecutor {
     private final ConfigManager configManager;
 
     public TpdenyCommand(Main plugin, ConfigManager configManager) {
-        this.tpaCommand = (TpaCommand) plugin.getCommand("tpa").getExecutor();
-        this.tpahereCommand = (TpahereCommand) plugin.getCommand("tpahere").getExecutor();
+        this.tpaCommand = (TpaCommand) Objects.requireNonNull(plugin.getCommand("tpa")).getExecutor();
+        this.tpahereCommand = (TpahereCommand) Objects.requireNonNull(plugin.getCommand("tpahere")).getExecutor();
         this.configManager = configManager;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tpdeny_only_player")));
             return true;
         }
-
-        Player player = (Player) sender;
 
         UUID requesterUUID = tpaCommand.removeTpaRequest(player.getUniqueId());
         if (requesterUUID == null) {

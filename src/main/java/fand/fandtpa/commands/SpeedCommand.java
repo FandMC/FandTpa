@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class SpeedCommand implements CommandExecutor {
 
@@ -16,13 +17,11 @@ public class SpeedCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_only_player")));
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length != 2) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_usage")));

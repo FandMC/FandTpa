@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +23,15 @@ public class GmCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("gm_specify_mode")));
             return true;
         }
 
         String mode = args[0].toLowerCase();
-        GameMode gameMode = null;
-        String modeName = "";
+        GameMode gameMode;
+        String modeName;
 
         switch (mode) {
             case "0":

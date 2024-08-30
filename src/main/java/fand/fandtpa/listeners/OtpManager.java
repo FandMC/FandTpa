@@ -21,8 +21,4 @@ public class OtpManager {
         return logoutLocations.get(playerUUID);
     }
 
-    // 可选：删除玩家的退出位置（比如当管理员传送后）
-    public void removeLogoutLocation(UUID playerUUID) {
-        logoutLocations.remove(playerUUID);
-    }
 }

@@ -1,6 +1,5 @@
 package fand.fandtpa.commands;
 
-import fand.fandtpa.Main;
 import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
 import org.bukkit.Bukkit;
@@ -8,30 +7,27 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class TpaCommand implements CommandExecutor {
 
-    private final Main plugin;
     private final HashMap<UUID, UUID> tpaRequests;
     private final ConfigManager configManager;
 
-    public TpaCommand(Main plugin, ConfigManager configManager) {
-        this.plugin = plugin;
+    public TpaCommand(ConfigManager configManager) {
         this.tpaRequests = new HashMap<>();
         this.configManager = configManager;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tpa_only_player")));
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length != 1) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tpa_usage")));

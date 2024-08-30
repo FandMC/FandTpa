@@ -6,11 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class HomeTabCompleter implements TabCompleter {
 
@@ -21,12 +19,11 @@ public class HomeTabCompleter implements TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (!(sender instanceof Player)) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (!(sender instanceof Player player)) {
             return null;
         }
 
-        Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
         List<String> completions = new ArrayList<>();
 
@@ -54,10 +51,8 @@ public class HomeTabCompleter implements TabCompleter {
         String path = "homes." + playerUUID;
 
         if (plugin.getHomesConfig().contains(path)) {
-            Map<String, Object> homes = plugin.getHomesConfig().getConfigurationSection(path).getValues(false);
-            if (homes != null) {
-                completions = StringUtil.copyPartialMatches(input, new ArrayList<>(homes.keySet()), new ArrayList<>());
-            }
+            Map<String, Object> homes = Objects.requireNonNull(plugin.getHomesConfig().getConfigurationSection(path)).getValues(false);
+            completions = StringUtil.copyPartialMatches(input, new ArrayList<>(homes.keySet()), new ArrayList<>());
         }
 
         return completions;

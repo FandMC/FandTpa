@@ -10,9 +10,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.UUID;
+import java.util.Objects;
 
 public class HomeCommand implements CommandExecutor {
 
@@ -26,14 +27,11 @@ public class HomeCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("home_only_player")));
             return true;
         }
-
-        Player player = (Player) sender;
-        UUID playerUUID = player.getUniqueId();
 
         if (args.length == 0) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("home_usage")));
@@ -104,7 +102,7 @@ public class HomeCommand implements CommandExecutor {
         String path = "homes." + player.getUniqueId();
         FileConfiguration homesConfig = plugin.getHomesConfig();
         if (homesConfig.contains(path)) {
-            Map<String, Object> homes = homesConfig.getConfigurationSection(path).getValues(false);
+            Map<String, Object> homes = Objects.requireNonNull(homesConfig.getConfigurationSection(path)).getValues(false);
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("home_list").replace("{homes}", String.join(", ", homes.keySet()))));
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("home_no_homes")));
@@ -133,7 +131,9 @@ public class HomeCommand implements CommandExecutor {
             double z = homesConfig.getDouble(path + ".z");
             float yaw = (float) homesConfig.getDouble(path + ".yaw");
             float pitch = (float) homesConfig.getDouble(path + ".pitch");
-            return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+            if (world != null) {
+                return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+            }
         }
         return null;
     }

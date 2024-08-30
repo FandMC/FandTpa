@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class SetTitleCommand implements CommandExecutor {
 
@@ -20,7 +21,7 @@ public class SetTitleCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         // 检查是否有权限
         if (!sender.hasPermission("titles.set")) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("settitle_no_permission")));

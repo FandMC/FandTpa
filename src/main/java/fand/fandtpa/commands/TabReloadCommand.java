@@ -6,6 +6,7 @@ import fand.fandtpa.util.ConfigManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 public class TabReloadCommand implements CommandExecutor {
 
@@ -18,7 +19,7 @@ public class TabReloadCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             plugin.loadTabConfig(); // 重新加载配置文件
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tab_reload_success")));

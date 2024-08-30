@@ -1,7 +1,7 @@
 package fand.fandtpa.listeners;
 
 import fand.fandtpa.Main;
-import org.bukkit.ChatColor;
+import fand.fandtpa.util.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;

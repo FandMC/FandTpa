@@ -250,8 +250,8 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new TpaCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpahereCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new TpaCommand(configManager));
+        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpahereCommand(configManager));
         Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TpacceptCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TpdenyCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("home")).setExecutor(new HomeCommand(this, configManager));

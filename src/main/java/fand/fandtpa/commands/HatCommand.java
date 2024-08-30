@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class HatCommand implements CommandExecutor {
 
@@ -17,16 +18,15 @@ public class HatCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("hat_only_player")));
             return true;
         }
 
-        Player player = (Player) sender;
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
 
-        if (itemInHand == null || itemInHand.getType().isAir()) {
+        if (itemInHand.getType().isAir()) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("hat_no_item_in_hand")));
             return true;
         }
