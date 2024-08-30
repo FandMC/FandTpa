@@ -4,14 +4,13 @@ import fand.fandtpa.commands.*;
 import fand.fandtpa.economy.EcoManager;
 import fand.fandtpa.listeners.*;
 import fand.fandtpa.tab.TabListUpdater;
+import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,25 +18,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements Listener {
 
     public FileConfiguration tabConfig;
-    private FileConfiguration languageConfig;
     private String language;
     private File homesFile;
     private FileConfiguration homesConfig;
     private File titlesFile;
     private FileConfiguration titlesConfig;
-    private final HashMap<UUID, Location> deathLocations = new HashMap<>();
     private ConfigManager configManager;
     private boolean tabFunctionEnabled = true;
-    private boolean papiEnabled = false;
-    private Object economy = null;
     private EcoManager ecoManager;
     private OtpManager otpManager;
 
@@ -46,14 +39,9 @@ public class Main extends JavaPlugin {
         otpManager = new OtpManager();
         checkForTabPlugin();
         configManager = new ConfigManager(this);
-        saveDefaultConfig();
-        language = getConfig().getString("language", "zh_CN"); // 设置默认语言为 zh_CN
-        loadLanguageFile();
-
 
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                papiEnabled = true;
                 getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
             } else {
                 getLogger().info("未找到PlaceholderAPI，将在没有PlaceholderAPI支持的情况下运行。");
@@ -68,10 +56,20 @@ public class Main extends JavaPlugin {
                 int time = 20;
                 new TabListUpdater(this).runTaskTimer(this, 0L, time);
             }
+
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
             ecoManager = new EcoManager(dbPath);
+
             loadTabConfig();
             createDataFolders();
+
+            // 确保语言变量被正确初始化
+            language = getConfig().getString("language", "zh_CN");
+            getLogger().info("当前语言设置: " + language);
+
+            loadLanguageFiles();  // 释放并加载语言文件
+
+            configManager.reloadMessages();  // 再次加载消息
             loadConfigurationFiles();
             registerCommands();
             registerListeners();
@@ -80,13 +78,16 @@ public class Main extends JavaPlugin {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
         }
     }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         otpManager.saveLogoutLocation(event.getPlayer());
     }
+
     public EcoManager getEcoManager() {
         return ecoManager;
     }
+
     private boolean setupEconomy() {
         try {
             if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -103,7 +104,7 @@ public class Main extends JavaPlugin {
 
             if (rsp != null) {
                 Method getProviderMethod = rspClass.getMethod("getProvider");
-                economy = getProviderMethod.invoke(rsp); // 获取经济服务提供者
+                Object economy = getProviderMethod.invoke(rsp); // 获取经济服务提供者
                 return economy != null;
             }
 
@@ -114,22 +115,13 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public Object getEconomy() {
-        return economy;
-    }
-    public String replacePlaceholders(Player player, String text) {
-        if (papiEnabled) {
-            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
-        } else {
-            return text;
-        }
-    }
     private void checkForTabPlugin() {
         Plugin tabPlugin = Bukkit.getPluginManager().getPlugin("TAB");
         if (tabPlugin != null && tabPlugin.isEnabled()) {
             tabFunctionEnabled = false;
         }
     }
+
     @Override
     public void onDisable() {
         logToConsole(configManager.getMessage("plugin_disabled"));
@@ -139,33 +131,34 @@ public class Main extends JavaPlugin {
     public ConfigManager getConfigManager() {
         return configManager;
     }
-    private void loadLanguageFile() {
-        // 确保 lang 文件夹存在
+
+    private void loadLanguageFiles() {
         File langFolder = new File(getDataFolder(), "lang");
         if (!langFolder.exists()) {
             langFolder.mkdirs();
         }
 
-        // 确保所有支持的语言文件都被释放
-        String[] supportedLanguages = {"zh_CN", "en_us"};
-        for (String lang : supportedLanguages) {
-            File langFile = new File(langFolder, lang + ".yml");
+        // 自动释放语言文件
+        String[] supportedLanguages = {"zh_CN.yml", "en_us.yml"};
+        for (String langFileName : supportedLanguages) {
+            File langFile = new File(langFolder, langFileName);
             if (!langFile.exists()) {
-                saveResource("lang/" + lang + ".yml", false);
-                getLogger().info("释放语言文件: " + lang + ".yml");
+                saveResource("lang/" + langFileName, false);
+                getLogger().info("释放语言文件: " + langFileName);
             }
         }
 
-        // 加载当前配置选择的语言文件
+        // 加载当前语言文件
+        if (language == null) {
+            getLogger().severe("语言未设置，加载默认语言文件: zh_CN.yml");
+            language = "zh_CN";
+        }
+
         File languageFile = new File(langFolder, language + ".yml");
-        getLogger().info("加载语言文件: " + languageFile.getAbsolutePath());
-
-        languageConfig = YamlConfiguration.loadConfiguration(languageFile);
-
-        if (languageConfig == null) {
-            getLogger().severe("语言文件加载失败");
+        if (languageFile.exists()) {
+            getLogger().info("加载语言文件: " + languageFile.getAbsolutePath());
         } else {
-            getLogger().info("语言文件加载成功");
+            getLogger().severe("语言文件加载失败: " + languageFile.getAbsolutePath());
         }
     }
 
@@ -195,6 +188,7 @@ public class Main extends JavaPlugin {
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
+                    getLogger().info(fileName + " 文件创建成功: " + file.getPath());
                 } else {
                     getLogger().severe(fileName + " 文件创建失败: " + file.getPath());
                 }
@@ -241,16 +235,29 @@ public class Main extends JavaPlugin {
         saveConfigFile(titlesConfig, titlesFile);
     }
 
+    public void toggleVanish(org.bukkit.entity.Player player) {
+        if (player.hasMetadata("vanished")) {
+            // 解除隐身状态
+            player.removeMetadata("vanished", this);
+            Bukkit.getOnlinePlayers().forEach(p -> p.showPlayer(this, player));
+            player.sendMessage(ChatColor.GREEN + "你现在已取消隐身！");
+        } else {
+            // 设置隐身状态
+            player.setMetadata("vanished", new org.bukkit.metadata.FixedMetadataValue(this, true));
+            Bukkit.getOnlinePlayers().forEach(p -> p.hidePlayer(this, player));
+            player.sendMessage(ChatColor.GREEN + "你现在已隐身！");
+        }
+    }
+
     private void registerCommands() {
-        EcoCommand ecoCommand = new EcoCommand(this,configManager);
-        Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new TpaCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpahereCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TpacceptCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TpdenyCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("home")).setExecutor(new HomeCommand(this,configManager));
+        Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new TpaCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpahereCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TpacceptCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TpdenyCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("home")).setExecutor(new HomeCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("home")).setTabCompleter(new HomeTabCompleter(this));
         Objects.requireNonNull(this.getCommand("back")).setExecutor(new BackCommand(this.getLogger(), configManager));
-        Objects.requireNonNull(this.getCommand("settitle")).setExecutor(new SetTitleCommand(this,configManager));
+        Objects.requireNonNull(this.getCommand("settitle")).setExecutor(new SetTitleCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(configManager));
         Objects.requireNonNull(this.getCommand("rtp")).setExecutor(new TprandomCommand(this));
         Objects.requireNonNull(this.getCommand("invsee")).setExecutor(new InvseeCommand(configManager));
@@ -258,12 +265,15 @@ public class Main extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("fly")).setExecutor(new FlyCommand(configManager));
         Objects.requireNonNull(this.getCommand("gm")).setExecutor(new GmCommand(configManager));
         Objects.requireNonNull(this.getCommand("gm")).setTabCompleter(new GmTabCompleter());
-        Objects.requireNonNull(this.getCommand("tab")).setExecutor(new TabReloadCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("eco")).setExecutor(new EcoCommand(this,configManager));
+        Objects.requireNonNull(this.getCommand("tab")).setExecutor(new TabReloadCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("eco")).setExecutor(new EcoCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("eco")).setTabCompleter(new EcoTabCompleter());
         Objects.requireNonNull(this.getCommand("speed")).setExecutor(new SpeedCommand(configManager));
-        Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this,configManager));
-        Objects.requireNonNull(this.getCommand("otp")).setExecutor(new OtpCommand(otpManager,configManager));
+        Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("otp")).setExecutor(new OtpCommand(otpManager, configManager));
+        Objects.requireNonNull(this.getCommand("fandtpa")).setExecutor(new FandTpaCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("fandtpa")).setTabCompleter(new FandTpaCommand(this, configManager));
+        Objects.requireNonNull(this.getCommand("v")).setExecutor(new VanishCommand(this));
     }
 
     private void registerListeners() {

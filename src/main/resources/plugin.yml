@@ -1,6 +1,6 @@
 folia-supported: true
 name: Fandtpa
-version: 1.4
+version: 1.5
 main: fand.fandtpa.Main
 api-version: '1.20'
 commands:
@@ -71,6 +71,10 @@ commands:
     description: 将玩家传送到上一次退出的位置
     usage: /otp
     permission: fandtpa.otp.use
+  fandtpa:
+    description: Main command for FandTPA plugin
+    usage: /fandtpa <reload|help>
+    permission: fandtpa.reload
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
@@ -104,4 +108,7 @@ permissions:
     default: op
   fandtpa.otp.use:
     description: 允许回到玩家退出前的位置
+    default: op
+  fandtpa.reload:
+    description: 重载插件
     default: op
