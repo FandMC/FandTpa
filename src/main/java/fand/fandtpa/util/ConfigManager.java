@@ -123,6 +123,12 @@ public class ConfigManager {
         messages.put("eco_take", "&aRemoved {amount} from {player}'s balance");
         messages.put("eco_balance", "&a{player}'s balance: {balance}");
         messages.put("unknown_subcommand", "&cUnknown subcommand: {command}");
+        messages.put("otp_usage", "&cUsage: /otp <player>");
+        messages.put("otp_player_only", "&cThis command can only be used by players!");
+        messages.put("otp_no_permission", "&cYou do not have permission to use this command.");
+        messages.put("otp_player_online", "&cPlayer {player} is currently online.");
+        messages.put("otp_location_not_found", "&cCould not find the logout location for player {player}.");
+        messages.put("otp_teleport_success", "&aYou have been teleported to {player}'s logout location.");
     }
 
     private void loadChineseMessages() {
@@ -216,6 +222,12 @@ public class ConfigManager {
         messages.put("eco_take", "&a已减少 {player} 的余额 {amount}");
         messages.put("eco_balance", "&a{player} 的余额: {balance}");
         messages.put("unknown_subcommand", "&c未知的子命令: {command}");
+        messages.put("otp_usage", "&c使用方法: /otp <玩家名字>");
+        messages.put("otp_player_only", "&c这个命令只能由玩家使用。");
+        messages.put("otp_no_permission", "&c你没有权限使用这个命令。");
+        messages.put("otp_player_online", "&c玩家 {player} 当前在线。");
+        messages.put("otp_location_not_found", "&c无法找到玩家 {player} 的退出位置。");
+        messages.put("otp_teleport_success", "&a你已传送到玩家 {player} 的退出位置。");
     }
 
     public String getMessage(String key) {

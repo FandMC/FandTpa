@@ -11,6 +11,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,9 +39,11 @@ public class Main extends JavaPlugin {
     private boolean papiEnabled = false;
     private Object economy = null;
     private EcoManager ecoManager;
+    private OtpManager otpManager;
 
     @Override
     public void onEnable() {
+        otpManager = new OtpManager();
         checkForTabPlugin();
         configManager = new ConfigManager(this);
         saveDefaultConfig();
@@ -76,7 +80,10 @@ public class Main extends JavaPlugin {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
         }
     }
-
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        otpManager.saveLogoutLocation(event.getPlayer());
+    }
     public EcoManager getEcoManager() {
         return ecoManager;
     }
@@ -256,12 +263,14 @@ public class Main extends JavaPlugin {
         Objects.requireNonNull(this.getCommand("eco")).setTabCompleter(new EcoTabCompleter());
         Objects.requireNonNull(this.getCommand("speed")).setExecutor(new SpeedCommand(configManager));
         Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this,configManager));
+        Objects.requireNonNull(this.getCommand("otp")).setExecutor(new OtpCommand(otpManager,configManager));
     }
 
     private void registerListeners() {
         BackCommand backCommand = new BackCommand(getLogger(), new ConfigManager(this));
         Bukkit.getPluginManager().registerEvents(new PlayerChatListener(this), this);
         getServer().getPluginManager().registerEvents(backCommand, this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(otpManager), this);
     }
 
     private void logToConsole(String message) {
