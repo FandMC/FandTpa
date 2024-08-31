@@ -97,4 +97,5 @@ otp_teleport_success: "&aYou have been teleported to {player}'s logout location.
 fandtpa_help: "&eFandtpa available commands: /fandtpa <reload/help>"
 fandtpa_reload: "&aFandtpa configuration has been reloaded."
 fandtpa_reload_usage: "&cUsage: /fandtpa reload"
-fandtpa_help_usage: "&cUsage: /fandtpa help"
+fandtpa_usage: "&cUsage: /fandtpa help"
+fandtpa_reload_success: "&areload success"

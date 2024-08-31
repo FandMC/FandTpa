@@ -1,6 +1,6 @@
 folia-supported: true
 name: Fandtpa
-version: 1.5
+version: 1.7
 main: fand.fandtpa.Main
 api-version: '1.20'
 commands:
@@ -75,6 +75,14 @@ commands:
     description: Main command for FandTPA plugin
     usage: /fandtpa <reload|help>
     permission: fandtpa.reload
+  v:
+    description: 隐身
+    usage: /v
+    permission: fandtpa.v.use
+  hd:
+    description: 重载全息字
+    usage: /hd reload
+    permission: fandtpa.hd.reload
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
@@ -111,4 +119,10 @@ permissions:
     default: op
   fandtpa.reload:
     description: 重载插件
+    default: op
+  fandtpa.v.use:
+    description: 允许隐身
+    default: op
+  fandtpa.hd.reload:
+    description: 允许重载悬浮字
     default: op

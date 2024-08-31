@@ -7,18 +7,23 @@ import fand.fandtpa.tab.TabListUpdater;
 import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
@@ -33,9 +38,12 @@ public class Main extends JavaPlugin implements Listener {
     private boolean tabFunctionEnabled = true;
     private EcoManager ecoManager;
     private OtpManager otpManager;
+    private File hologramsFile;
+    private FileConfiguration hologramsConfig;
 
     @Override
     public void onEnable() {
+        this.tabConfig = this.getConfig();
         otpManager = new OtpManager();
         checkForTabPlugin();
         configManager = new ConfigManager(this);
@@ -59,7 +67,7 @@ public class Main extends JavaPlugin implements Listener {
 
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
             ecoManager = new EcoManager(dbPath);
-
+            loadHolograms();
             loadTabConfig();
             createDataFolders();
 
@@ -87,7 +95,78 @@ public class Main extends JavaPlugin implements Listener {
     public EcoManager getEcoManager() {
         return ecoManager;
     }
+    private void loadHolograms() {
+        hologramsFile = new File(getDataFolder(), "holograms.yml");
+        if (!hologramsFile.exists()) {
+            saveDefaultHologramsConfig(); // 保存带有默认值的配置
+        }
+        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
 
+        // 因为holograms现在是一个列表，使用getList来获取它
+        @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
+        if (hologramsList.isEmpty()) {
+            getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
+            saveDefaultHologramsConfig();
+            return;
+        }
+
+        for (Map<?, ?> hologramData : hologramsList) {
+            String worldName = (String) hologramData.get("world");
+            double x = (double) hologramData.get("x");
+            double y = (double) hologramData.get("y");
+            double z = (double) hologramData.get("z");
+            String text = (String) hologramData.get("text");
+
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) {
+                Location location = new Location(world, x, y, z);
+                spawnHologram(location, text);
+            }
+        }
+    }
+
+    private void saveDefaultHologramsConfig() {
+        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
+        List<Map<String, Object>> defaultHolograms = new ArrayList<>();
+
+        Map<String, Object> exampleHologram = new HashMap<>();
+        exampleHologram.put("world", "world");
+        exampleHologram.put("x", 100.5);
+        exampleHologram.put("y", 65.0);
+        exampleHologram.put("z", 200.5);
+        exampleHologram.put("text", "欢迎来到服务器！");
+        defaultHolograms.add(exampleHologram);
+
+        hologramsConfig.set("holograms", defaultHolograms);
+        try {
+            hologramsConfig.save(hologramsFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void reloadHolograms() {
+        // 清除所有现有的 ArmorStand（实现清除逻辑）
+        Bukkit.getWorlds().forEach(world ->
+                world.getEntitiesByClass(ArmorStand.class).stream()
+                        .filter(armorStand -> armorStand.isMarker() && armorStand.getCustomName() != null)
+                        .forEach(ArmorStand::remove)
+        );
+
+        // 重新加载悬浮字
+        loadHolograms();
+    }
+
+    private void spawnHologram(Location location, String text) {
+        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
+        armorStand.setGravity(false);
+        armorStand.setVisible(false);
+        armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', text));
+        armorStand.setCustomNameVisible(true);
+        armorStand.setMarker(true);
+    }
     private boolean setupEconomy() {
         try {
             if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -274,6 +353,7 @@ public class Main extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("fandtpa")).setExecutor(new FandTpaCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("fandtpa")).setTabCompleter(new FandTpaCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("v")).setExecutor(new VanishCommand(this));
+        Objects.requireNonNull(this.getCommand("hd")).setExecutor(new HologramCommand(this));
     }
 
     private void registerListeners() {
