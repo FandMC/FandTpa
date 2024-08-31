@@ -1,6 +1,7 @@
 package fand.fandtpa.commands;
 
 import fand.fandtpa.Main;
+import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,27 +25,27 @@ public class FandTpaCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(configManager.getMessage("fandtpa_usage"));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fandtpa_usage")));
             return true;
         }
 
         switch (args[0].toLowerCase()) {
             case "reload":
                 if (!sender.hasPermission("fandtpa.reload")) {
-                    sender.sendMessage(configManager.getMessage("no_permission"));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
                     return true;
                 }
                 plugin.reloadConfig();
                 configManager.reloadMessages();
-                sender.sendMessage(configManager.getMessage("fandtpa_reload_success"));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fandtpa_reload_success")));
                 break;
 
             case "help":
-                sender.sendMessage(configManager.getMessage("fandtpa_help"));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fandtpa_help")));
                 break;
 
             default:
-                sender.sendMessage(configManager.getMessage("unknown_subcommand").replace("{command}", args[0]));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("unknown_subcommand").replace("{command}", args[0])));
                 break;
         }
         return true;
