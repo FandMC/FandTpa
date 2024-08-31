@@ -89,6 +89,7 @@ public class InvseeCommand implements CommandExecutor {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     // 左键点击删除物品
                     target.getInventory().setItem(slot, null);
+                    updateInventoryForPlayer(target);
                     button.setText("Empty");
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     // 右键点击输入物品类型
@@ -97,6 +98,7 @@ public class InvseeCommand implements CommandExecutor {
                         try {
                             ItemStack newItem = new ItemStack(org.bukkit.Material.valueOf(itemType.toUpperCase()));
                             target.getInventory().setItem(slot, newItem);
+                            updateInventoryForPlayer(target);
                             button.setText(newItem.getType().toString());
                         } catch (IllegalArgumentException ex) {
                             JOptionPane.showMessageDialog(null, "Invalid item type!");
@@ -107,5 +109,10 @@ public class InvseeCommand implements CommandExecutor {
         });
 
         return button;
+    }
+
+    private void updateInventoryForPlayer(Player player) {
+        // 强制服务器和客户端同步背包状态
+        player.updateInventory();
     }
 }
