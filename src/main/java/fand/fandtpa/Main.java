@@ -8,11 +8,13 @@ import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -40,6 +42,9 @@ public class Main extends JavaPlugin implements Listener {
     private OtpManager otpManager;
     private File hologramsFile;
     private FileConfiguration hologramsConfig;
+    private File portalsFile;
+    private FileConfiguration portalsConfig;
+    private Map<Location, PortalData> portalMap = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -70,7 +75,8 @@ public class Main extends JavaPlugin implements Listener {
             loadHolograms();
             loadTabConfig();
             createDataFolders();
-
+            loadPortals();
+            startParticleEffects();
             // 确保语言变量被正确初始化
             language = getConfig().getString("language", "zh_CN");
             getLogger().info("当前语言设置: " + language);
@@ -95,6 +101,7 @@ public class Main extends JavaPlugin implements Listener {
     public EcoManager getEcoManager() {
         return ecoManager;
     }
+
     private void loadHolograms() {
         hologramsFile = new File(getDataFolder(), "holograms.yml");
         if (!hologramsFile.exists()) {
@@ -102,7 +109,6 @@ public class Main extends JavaPlugin implements Listener {
         }
         hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
 
-        // 因为holograms现在是一个列表，使用getList来获取它
         @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
         if (hologramsList.isEmpty()) {
             getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
@@ -115,15 +121,41 @@ public class Main extends JavaPlugin implements Listener {
             double x = (double) hologramData.get("x");
             double y = (double) hologramData.get("y");
             double z = (double) hologramData.get("z");
-            String text = (String) hologramData.get("text");
+            Object textObject = hologramData.get("text");
+
+            if (textObject == null) {
+                getLogger().warning("Hologram text is null, skipping...");
+                continue;
+            }
+
+            // 处理单行或多行文本
+            String text;
+            if (textObject instanceof String) {
+                text = (String) textObject;
+            } else if (textObject instanceof List) {
+                List<String> textList = (List<String>) textObject;
+                text = String.join("\n", textList); // 多行文本使用换行符拼接
+            } else {
+                getLogger().warning("Hologram text format is invalid, skipping...");
+                continue;
+            }
+
+            if (text.isEmpty()) {
+                getLogger().warning("Hologram text is empty, skipping...");
+                continue;
+            }
 
             World world = Bukkit.getWorld(worldName);
             if (world != null) {
                 Location location = new Location(world, x, y, z);
                 spawnHologram(location, text);
+            } else {
+                getLogger().warning("World '" + worldName + "' not found for hologram at " + x + ", " + y + ", " + z);
             }
         }
     }
+
+
 
     private void saveDefaultHologramsConfig() {
         hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
@@ -160,13 +192,22 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void spawnHologram(Location location, String text) {
-        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
-        armorStand.setGravity(false);
-        armorStand.setVisible(false);
-        armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', text));
-        armorStand.setCustomNameVisible(true);
-        armorStand.setMarker(true);
+        String[] lines = text.split("\n");
+        double lineSpacing = 0.25; // 每行之间的间距，调整这个值来改变行之间的距离
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+
+            ArmorStand armorStand = location.getWorld().spawn(location.clone().add(0, -i * lineSpacing, 0), ArmorStand.class);
+            armorStand.setGravity(false);
+            armorStand.setVisible(false);
+            armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', line));
+            armorStand.setCustomNameVisible(true);
+            armorStand.setMarker(true);
+        }
     }
+
+
     private boolean setupEconomy() {
         try {
             if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -361,9 +402,124 @@ public class Main extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerChatListener(this), this);
         getServer().getPluginManager().registerEvents(backCommand, this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(otpManager), this);
+        getServer().getPluginManager().registerEvents(new PortalListener(this), this);
     }
 
     private void logToConsole(String message) {
         getServer().getConsoleSender().sendMessage(message);
     }
+    public void loadPortals() {
+        portalsFile = new File(getDataFolder(), "portals.yml");
+        if (!portalsFile.exists()) {
+            saveResource("portals.yml", false);
+        }
+        portalsConfig = YamlConfiguration.loadConfiguration(portalsFile);
+        portalMap.clear();
+
+        ConfigurationSection worldsSection = portalsConfig.getConfigurationSection("portals");
+        if (worldsSection != null) {
+            for (String worldName : worldsSection.getKeys(false)) {
+                World world = Bukkit.getWorld(worldName);
+                if (world != null) {
+                    ConfigurationSection worldSection = worldsSection.getConfigurationSection(worldName);
+                    if (worldSection != null) {
+                        for (String portalKey : worldSection.getKeys(false)) {
+                            ConfigurationSection portalSection = worldSection.getConfigurationSection(portalKey);
+                            if (portalSection != null) {
+                                double x1 = portalSection.getDouble("region.x1");
+                                double y1 = portalSection.getDouble("region.y1");
+                                double z1 = portalSection.getDouble("region.z1");
+                                double x2 = portalSection.getDouble("region.x2");
+                                double y2 = portalSection.getDouble("region.y2");
+                                double z2 = portalSection.getDouble("region.z2");
+                                String command = portalSection.getString("command");
+                                String particleEffect = portalSection.getString("particles", "");
+
+                                Location corner1 = new Location(world, x1, y1, z1);
+                                Location corner2 = new Location(world, x2, y2, z2);
+                                PortalData portalData = new PortalData(corner1, corner2, command, particleEffect);
+                                portalMap.put(corner1, portalData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public void startParticleEffects() {
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            for (PortalData portal : portalMap.values()) {
+                if (portal.hasParticles()) {
+                    try {
+                        Particle particle = Particle.valueOf(portal.getParticleEffect().toUpperCase());
+                        generatePortalParticles(portal, particle);
+                    } catch (IllegalArgumentException e) {
+                        getLogger().warning("Invalid particle effect: " + portal.getParticleEffect() + ". Disabling particles.");
+                        portal.disableParticles();
+                    }
+                }
+            }
+        }, 0L, 20L); // 每秒钟执行一次
+    }
+
+    private void generatePortalParticles(PortalData portal, Particle particle) {
+        World world = portal.getCorner1().getWorld();
+
+        // 获取传送门区域的最小和最大坐标
+        int minX = Math.min(portal.getCorner1().getBlockX(), portal.getCorner2().getBlockX());
+        int maxX = Math.max(portal.getCorner1().getBlockX(), portal.getCorner2().getBlockX());
+        int minY = Math.min(portal.getCorner1().getBlockY(), portal.getCorner2().getBlockY());
+        int maxY = Math.max(portal.getCorner1().getBlockY(), portal.getCorner2().getBlockY());
+        int minZ = Math.min(portal.getCorner1().getBlockZ(), portal.getCorner2().getBlockZ());
+        int maxZ = Math.max(portal.getCorner1().getBlockZ(), portal.getCorner2().getBlockZ());
+
+        // 在 X 方向的边缘生成粒子
+        for (int x = minX; x <= maxX; x++) {
+            spawnParticleAt(world, particle, x, minY, minZ);
+            spawnParticleAt(world, particle, x, minY, maxZ);
+            spawnParticleAt(world, particle, x, maxY, minZ);
+            spawnParticleAt(world, particle, x, maxY, maxZ);
+        }
+
+        // 在 Y 方向的边缘生成粒子
+        for (int y = minY; y <= maxY; y++) {
+            spawnParticleAt(world, particle, minX, y, minZ);
+            spawnParticleAt(world, particle, minX, y, maxZ);
+            spawnParticleAt(world, particle, maxX, y, minZ);
+            spawnParticleAt(world, particle, maxX, y, maxZ);
+        }
+
+        // 在 Z 方向的边缘生成粒子
+        for (int z = minZ; z <= maxZ; z++) {
+            spawnParticleAt(world, particle, minX, minY, z);
+            spawnParticleAt(world, particle, minX, maxY, z);
+            spawnParticleAt(world, particle, maxX, minY, z);
+            spawnParticleAt(world, particle, maxX, maxY, z);
+        }
+    }
+
+    private void spawnParticleAt(World world, Particle particle, int x, int y, int z) {
+        Location loc = new Location(world, x, y, z);
+        world.spawnParticle(particle, loc, 1, 0, 0, 0, 0);
+    }
+
+    public void executePortalCommand(Player player, PortalData portalData) {
+        String command = portalData.getCommand().replace("{player}", player.getName());
+        getServer().dispatchCommand(getServer().getConsoleSender(), command);
+
+        if (portalData.hasParticles()) {
+            try {
+                Particle particle = Particle.valueOf(portalData.getParticleEffect().toUpperCase());
+                Location center = portalData.getCorner1().toVector().getMidpoint(portalData.getCorner2().toVector()).toLocation(portalData.getCorner1().getWorld());
+                player.getWorld().spawnParticle(particle, center, 30);
+            } catch (IllegalArgumentException e) {
+                getLogger().warning("Invalid particle effect: " + portalData.getParticleEffect() + ". Disabling particles.");
+                portalData.disableParticles();
+            }
+        }
+    }
+    public Map<Location, PortalData> getPortalMap() {
+        return portalMap;
+    }
+
 }
