@@ -20,7 +20,6 @@ public class HomeCommand implements CommandExecutor {
     private final Main plugin;
     private final ConfigManager configManager;
 
-    // 构造函数，传递 Main 类的实例
     public HomeCommand(Main plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;

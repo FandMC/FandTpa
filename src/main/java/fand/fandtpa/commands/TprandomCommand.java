@@ -31,7 +31,6 @@ public class TprandomCommand implements CommandExecutor {
                 public void run() {
                     Location randomLocation = getRandomSafeLocation(player);
                     if (randomLocation != null) {
-                        // 在主线程上执行传送和发送消息操作
                         new BukkitRunnable() {
                             @Override
                             public void run() {
@@ -47,7 +46,7 @@ public class TprandomCommand implements CommandExecutor {
                                 "&c无法找到安全位置进行随机传送，请稍后重试！"));
                     }
                 }
-            }.runTaskAsynchronously(plugin); // 在异步任务中执行
+            }.runTaskAsynchronously(plugin);
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c只有玩家可以使用此命令！"));
         }
@@ -77,7 +76,6 @@ public class TprandomCommand implements CommandExecutor {
         if (world == null || location.getBlockY() <= 0 || location.getBlockY() >= world.getMaxHeight()) {
             return false;
         }
-        // 检查玩家脚下和头顶的方块是否安全
         Location below = location.clone().subtract(0, 1, 0);
         Material groundMaterial = below.getBlock().getType();
         Material feetMaterial = location.getBlock().getType();

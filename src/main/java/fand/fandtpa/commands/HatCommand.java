@@ -31,7 +31,6 @@ public class HatCommand implements CommandExecutor {
             return true;
         }
 
-        // 将当前头盔移到主手，将主手物品放在头盔位置
         ItemStack itemOnHead = player.getInventory().getHelmet();
         player.getInventory().setHelmet(itemInHand);
         player.getInventory().setItemInMainHand(itemOnHead);

@@ -44,9 +44,9 @@ public class TpacceptCommand implements CommandExecutor {
                 requester.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tpaccept_request_accepted_by_target")));
 
                 if (tpaCommand.getTpaRequest(player.getUniqueId()) != null) {
-                    requester.teleport(player); // 处理 /tpa 请求
+                    requester.teleport(player);
                 } else {
-                    player.teleport(requester); // 处理 /tpahere 请求
+                    player.teleport(requester);
                 }
 
                 tpaCommand.removeTpaRequest(player.getUniqueId());

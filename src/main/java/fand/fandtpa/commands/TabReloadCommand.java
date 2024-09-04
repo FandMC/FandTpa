@@ -21,7 +21,7 @@ public class TabReloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            plugin.loadTabConfig(); // 重新加载配置文件
+            plugin.loadTabConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("tab_reload_success")));
             return true;
         }

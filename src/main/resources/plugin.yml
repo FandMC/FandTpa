@@ -1,6 +1,6 @@
 folia-supported: true
 name: Fandtpa
-version: 1.7
+version: 1.8
 main: fand.fandtpa.Main
 api-version: '1.20'
 commands:

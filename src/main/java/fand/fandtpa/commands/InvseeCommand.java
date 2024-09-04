@@ -45,14 +45,12 @@ public class InvseeCommand implements CommandExecutor {
         }
 
         if (isHeadless || !(sender instanceof Player)) {
-            // 无头环境或非玩家，使用命令行输出
             if (args.length == 1) {
                 displayInventory(sender, target);
             } else if (args.length == 2) {
                 modifyInventory(sender, target, args[1]);
             }
         } else {
-            // 支持图形化界面，使用GUI
             openCustomInventoryViewForConsole(target);
         }
 
@@ -86,7 +84,7 @@ public class InvseeCommand implements CommandExecutor {
 
             target.getInventory().setItem(slot, null);
             sender.sendMessage(ChatColor.GREEN + "成功清除玩家 " + target.getName() + " 的第 " + slot + " 个槽位的物品。");
-            target.updateInventory();  // 同步客户端
+            target.updateInventory();
         } catch (NumberFormatException e) {
             sender.sendMessage(ChatColor.RED + "槽位号必须是一个数字。");
         }
@@ -130,12 +128,10 @@ public class InvseeCommand implements CommandExecutor {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    // 左键点击删除物品
                     target.getInventory().setItem(slot, null);
                     updateInventoryForPlayer(target);
                     button.setText("空");
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    // 右键点击输入物品类型
                     String itemType = JOptionPane.showInputDialog("输入物品类型（英文）:");
                     if (itemType != null && !itemType.trim().isEmpty()) {
                         try {
@@ -155,17 +151,72 @@ public class InvseeCommand implements CommandExecutor {
     }
 
     private void updateInventoryForPlayer(Player player) {
-        // 强制服务器和客户端同步背包状态
         player.updateInventory();
     }
 
     private Map<Material, String> loadMaterialNames() {
         Map<Material, String> names = new HashMap<>();
-        // 手动填充部分常用物品的中文名称
+        names.put(Material.AIR, "空气");
         names.put(Material.STONE, "石头");
+        names.put(Material.GRANITE, "花岗岩");
+        names.put(Material.POLISHED_GRANITE, "磨制花岗岩");
+        names.put(Material.DIORITE, "闪长岩");
+        names.put(Material.POLISHED_DIORITE, "磨制闪长岩");
+        names.put(Material.ANDESITE, "安山岩");
+        names.put(Material.POLISHED_ANDESITE, "磨制安山岩");
+        names.put(Material.COBBLED_DEEPSLATE, "深板岩");
+        names.put(Material.POLISHED_DEEPSLATE, "磨制深板岩");
+        names.put(Material.CALCITE, "方解石");
+        names.put(Material.TUFF, "凝灰岩");
+        names.put(Material.GRASS_BLOCK, "草方块");
         names.put(Material.DIRT, "泥土");
-        // 添加更多物品
-        // 你可以手动将所有需要的物品翻译好，或者从现有的翻译文件加载
+        names.put(Material.COARSE_DIRT, "砂土");
+        names.put(Material.PODZOL, "灰化土");
+        names.put(Material.ROOTED_DIRT, "根系泥土");
+        names.put(Material.MUD, "泥");
+        names.put(Material.CRIMSON_NYLIUM, "绯红菌岩");
+        names.put(Material.WARPED_NYLIUM, "诡异菌岩");
+        names.put(Material.COBBLESTONE, "圆石");
+        names.put(Material.OAK_PLANKS, "橡木板");
+        names.put(Material.SPRUCE_PLANKS, "云杉木板");
+        names.put(Material.BIRCH_PLANKS, "白桦木板");
+        names.put(Material.JUNGLE_PLANKS, "丛林木板");
+        names.put(Material.ACACIA_PLANKS, "金合欢木板");
+        names.put(Material.CHERRY_PLANKS, "樱桃木板");
+        names.put(Material.DARK_OAK_PLANKS, "黑橡木板");
+        names.put(Material.MANGROVE_PLANKS, "红树木板");
+        names.put(Material.BAMBOO_PLANKS, "竹木板");
+        names.put(Material.CRIMSON_PLANKS, "绯红木板");
+        names.put(Material.WARPED_PLANKS, "诡异木板");
+        names.put(Material.SAND, "沙子");
+        names.put(Material.RED_SAND, "红沙");
+        names.put(Material.GRAVEL, "沙砾");
+        names.put(Material.COAL_ORE, "煤矿石");
+        names.put(Material.IRON_ORE, "铁矿石");
+        names.put(Material.COPPER_ORE, "铜矿石");
+        names.put(Material.GOLD_ORE, "金矿石");
+        names.put(Material.DIAMOND_ORE, "钻石矿石");
+        names.put(Material.NETHER_GOLD_ORE, "下界金矿石");
+        names.put(Material.NETHER_QUARTZ_ORE, "下界石英矿石");
+        names.put(Material.ANCIENT_DEBRIS, "远古残骸");
+        names.put(Material.COAL_BLOCK, "煤炭块");
+        names.put(Material.IRON_BLOCK, "铁块");
+        names.put(Material.GOLD_BLOCK, "金块");
+        names.put(Material.DIAMOND_BLOCK, "钻石块");
+        names.put(Material.NETHERITE_BLOCK, "下界合金块");
+        names.put(Material.AMETHYST_BLOCK, "紫水晶块");
+        names.put(Material.LAPIS_BLOCK, "青金石块");
+        names.put(Material.COPPER_BLOCK, "铜块");
+        names.put(Material.REDSTONE_ORE, "红石矿石");
+        names.put(Material.DEEPSLATE_REDSTONE_ORE, "深板岩红石矿石");
+        names.put(Material.EMERALD_ORE, "绿宝石矿石");
+        names.put(Material.DEEPSLATE_EMERALD_ORE, "深板岩绿宝石矿石");
+        names.put(Material.IRON_INGOT, "铁锭");
+        names.put(Material.GOLD_INGOT, "金锭");
+        names.put(Material.COPPER_INGOT, "铜锭");
+        names.put(Material.DIAMOND, "钻石");
+        names.put(Material.EMERALD, "绿宝石");
+
         return names;
     }
 }

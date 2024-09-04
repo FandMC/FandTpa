@@ -27,7 +27,7 @@ public class EcoCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length < 2) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("eco_usage")));
-            return true; // 修改为 true，避免命令执行结束后再显示用法提示
+            return true;
         }
 
         String subCommand = args[0];
@@ -40,7 +40,6 @@ public class EcoCommand implements CommandExecutor {
         EcoManager ecoManager = plugin.getEcoManager();
         BigDecimal amount = BigDecimal.ZERO;
 
-        // 处理子命令balance，不需要金额参数
         if (!subCommand.equalsIgnoreCase("balance")) {
             if (args.length < 3) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("eco_usage")));

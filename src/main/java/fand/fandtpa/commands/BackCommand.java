@@ -22,7 +22,6 @@ public class BackCommand implements CommandExecutor, Listener {
     private final Logger logger;
     private final ConfigManager configManager;
 
-    // 构造函数，接受 Logger 和 ConfigManager 实例
     public BackCommand(Logger logger, ConfigManager configManager) {
         this.logger = logger;
         this.configManager = configManager;

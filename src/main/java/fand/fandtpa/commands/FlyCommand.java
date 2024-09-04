@@ -18,19 +18,16 @@ public class FlyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        // 检查是否为玩家执行命令
         if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("command_only_player")));
             return true;
         }
 
-        // 检查玩家是否具有权限
         if (!player.hasPermission("fly.use")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
             return true;
         }
 
-        // 切换飞行模式
         boolean canFly = player.getAllowFlight();
         player.setAllowFlight(!canFly);
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fly_toggle").replace("{status}", canFly ? configManager.getMessage("fly_disabled") : configManager.getMessage("fly_enabled"))));

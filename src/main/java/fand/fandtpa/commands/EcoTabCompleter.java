@@ -20,7 +20,6 @@ public class EcoTabCompleter implements TabCompleter {
         if (args.length == 1) {
             StringUtil.copyPartialMatches(args[0], SUB_COMMANDS, suggestions);
         }
-        // 可以进一步添加玩家名和数字补全逻辑
         return suggestions;
     }
 }
