@@ -4,7 +4,7 @@ import fand.fandtpa.Main;
 import fand.fandtpa.util.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import fand.fandtpa.event.AsyncPlayerChatEvent;
 import org.bukkit.entity.Player;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -21,7 +21,7 @@ public class PlayerChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getTargetPlayer();
         String title = plugin.getTitlesConfig().getString(player.getUniqueId().toString());
 
         if (title != null) {
@@ -64,8 +64,7 @@ public class PlayerChatListener implements Listener {
             message = matcher.replaceFirst("");
 
             // 执行颜色渐变
-            String gradientText = applyGradient(startColor, endColor, textToColor);
-            message = gradientText;
+            message = applyGradient(startColor, endColor, textToColor);
         }
 
         return message;

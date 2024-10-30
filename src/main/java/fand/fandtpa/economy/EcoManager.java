@@ -1,5 +1,8 @@
 package fand.fandtpa.economy;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +12,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class EcoManager {
-
+    private static final Logger LOGGER = Logger.getLogger(EcoManager.class.getName());
     private final String dbUrl;
 
     public EcoManager(String dbPath) {
@@ -28,7 +31,7 @@ public class EcoManager {
              )) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "数据库操作出现异常", e);
         }
     }
 
@@ -50,7 +53,7 @@ public class EcoManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "数据库操作出现异常", e);
         }
         return defaultValue;
     }
@@ -65,7 +68,7 @@ public class EcoManager {
             stmt.setString(2, amount.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "数据库操作出现异常", e);
         }
     }
 
