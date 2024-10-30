@@ -1,7 +1,6 @@
 package fand.fandtpa.tab;
 
 import fand.fandtpa.Main;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
