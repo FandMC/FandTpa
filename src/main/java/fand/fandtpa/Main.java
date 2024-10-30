@@ -112,7 +112,7 @@ public class Main extends JavaPlugin implements Listener {
         @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
         if (hologramsList.isEmpty()) {
             getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
-            saveDefaultHologramsConfig();
+            //saveDefaultHologramsConfig();
             return;
         }
 
