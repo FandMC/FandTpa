@@ -1,7 +1,8 @@
 package fand.fandtpa.tab;
 
 import fand.fandtpa.Main;
-import fand.fandtpa.economy.EcoManager;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,7 +34,8 @@ public class TabListUpdater extends BukkitRunnable {
         header = replacePlaceholders(player, header);
         footer = replacePlaceholders(player, footer);
 
-        player.setPlayerListHeaderFooter(header, footer);
+        // 将 player 转换为 Audience
+        player.sendPlayerListHeaderAndFooter(Component.text(header), Component.text(footer));
     }
 
     private String replacePlaceholders(Player player, String text) {
