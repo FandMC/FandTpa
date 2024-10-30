@@ -1,9 +1,12 @@
 folia-supported: true
 name: Fandtpa
-version: 1.8
+version: 1.9
 main: fand.fandtpa.Main
 api-version: '1.20'
 commands:
+  ftinfo:
+    description: 查看插件版本信息
+    usage: /ftinfo
   tpa:
     description: 请求传送到某个玩家
     usage: /tpa <玩家名>
@@ -83,6 +86,10 @@ commands:
     description: 重载全息字
     usage: /hd reload
     permission: fandtpa.hd.reload
+  fserver:
+    description: 检测并显示子服玩家
+    usage: /fserver <子服>
+    permission: fandtpa.fserver.use
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
@@ -125,4 +132,7 @@ permissions:
     default: op
   fandtpa.hd.reload:
     description: 允许重载悬浮字
+    default: op
+  fandtpa.fserver.use:
+    description: 允许让玩家进入其他子服
     default: op

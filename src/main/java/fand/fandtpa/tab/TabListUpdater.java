@@ -37,8 +37,6 @@ public class TabListUpdater extends BukkitRunnable {
     }
 
     private String replacePlaceholders(Player player, String text) {
-        EcoManager ecoManager = plugin.getEcoManager();  // 获取EcoManager实例
-        String balance = ecoManager.getBalanceAsString(player.getUniqueId());
         if (papiEnabled) {
             text = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
         }
@@ -52,8 +50,7 @@ public class TabListUpdater extends BukkitRunnable {
                 .replace("%y%", String.valueOf(player.getLocation().getBlockY()))
                 .replace("%z%", String.valueOf(player.getLocation().getBlockZ()))
                 .replace("%tps%", getFormattedTPS())
-                .replace("%ping%", String.valueOf(player.getPing()))
-                .replace("%money%", balance);
+                .replace("%ping%", String.valueOf(player.getPing()));
     }
 
     private String getFormattedTPS() {

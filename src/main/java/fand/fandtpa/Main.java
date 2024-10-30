@@ -52,7 +52,6 @@ public class Main extends JavaPlugin implements Listener {
         otpManager = new OtpManager();
         checkForTabPlugin();
         configManager = new ConfigManager(this);
-
         try {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
@@ -395,6 +394,8 @@ public class Main extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("fandtpa")).setTabCompleter(new FandTpaCommand(this, configManager));
         Objects.requireNonNull(this.getCommand("v")).setExecutor(new VanishCommand(this));
         Objects.requireNonNull(this.getCommand("hd")).setExecutor(new HologramCommand(this));
+        Objects.requireNonNull(this.getCommand("fserver")).setExecutor(new FServerCommand());
+        Objects.requireNonNull(this.getCommand("ftinfo")).setExecutor(new FTInfoCommand(this));
     }
 
     private void registerListeners() {

@@ -32,16 +32,11 @@ public class SuicideCommand implements CommandExecutor {
 
     private void forcePlayerDeath(Player player) {
         player.setHealth(0);
-
         if (!player.isDead()) {
             player.damage(1000); // 给予大额伤害确保玩家死亡
-
-            if (!player.isDead()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.HARM, 1, 10)); // 高等级的即时伤害效果
                 if (!player.isDead()) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 200, 1)); // 持续的枯萎效果，最终导致死亡
                 }
-            }
         }
     }
 }

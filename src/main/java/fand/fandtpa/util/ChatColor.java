@@ -20,16 +20,17 @@ public enum ChatColor {
     WHITE('f', "§f", "white"),
 
     // 自定义颜色
-    ORANGE('g', "§6", "orange"), // 注意：Minecraft 没有直接的橙色代码，使用黄金色代替
-    PINK('h', "§d", "pink"),    // 使用浅紫色作为粉色
+    ORANGE('g', "§6", "orange"),
+    PINK('h', "§d", "pink"),
     CYAN('i', "§b", "cyan"),
     LIME('j', "§a", "lime"),
 
     // 特殊效果
-    BOLD('k', "§l", "bold"),
-    ITALIC('l', "§o", "italic"),
-    UNDERLINE('m', "§n", "underline"),
-    STRIKETHROUGH('n', "§m", "strikethrough"),
+    OBFUSCATED('k', "§k", "obfuscated"), // 乱码效果
+    BOLD('l', "§l", "bold"),
+    ITALIC('m', "§o", "italic"),
+    UNDERLINE('n', "§n", "underline"),
+    STRIKETHROUGH('o', "§m", "strikethrough"),
     RESET('r', "§r", "reset");
 
     private final char code;
@@ -52,6 +53,7 @@ public enum ChatColor {
         return name;
     }
 
+    // 新增方法: 将颜色代码和特殊效果的字符替换为对应的 Minecraft 代码
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         StringBuilder sb = new StringBuilder();
         char[] b = textToTranslate.toCharArray();
@@ -71,6 +73,7 @@ public enum ChatColor {
         return sb.toString();
     }
 
+    // 根据字符获取颜色或特殊效果
     public static ChatColor getByChar(char code) {
         for (ChatColor color : values()) {
             if (color.code == code) {
@@ -78,5 +81,26 @@ public enum ChatColor {
             }
         }
         return null;
+    }
+
+    // 将十六进制颜色转换为 RGB
+    public static int[] hexToRgb(String hex) {
+        return new int[]{
+                Integer.valueOf(hex.substring(0, 2), 16),
+                Integer.valueOf(hex.substring(2, 4), 16),
+                Integer.valueOf(hex.substring(4, 6), 16)
+        };
+    }
+
+    // 将 RGB 转换为十六进制
+    public static String rgbToHex(int red, int green, int blue) {
+        return String.format("%02x%02x%02x", red, green, blue);
+    }
+
+    // 生成自定义颜色代码，支持使用 HEX 颜色
+    public static String of(String hexColor) {
+        return "§x§" + hexColor.charAt(0) + "§" + hexColor.charAt(1) +
+                "§" + hexColor.charAt(2) + "§" + hexColor.charAt(3) +
+                "§" + hexColor.charAt(4) + "§" + hexColor.charAt(5);
     }
 }

@@ -22,7 +22,7 @@ public class PortalListener implements Listener {
             for (PortalData portalData : plugin.getPortalMap().values()) {
                 if (portalData.isInside(to)) {
                     plugin.executePortalCommand(event.getPlayer(), portalData);
-                    break;  // 一旦找到并执行命令，就不再检查其他传送门
+                    break;
                 }
             }
         }
