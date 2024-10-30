@@ -35,7 +35,7 @@ public class ConfigManager {
     private void loadMessages() {
         File langFolder = new File(plugin.getDataFolder(), "lang");
         if (!langFolder.exists()) {
-            langFolder.mkdirs();
+            System.out.println("文件夹创建失败，请检查路径或权限");
         }
 
         File langFile = new File(langFolder, language + ".yml");
