@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -44,7 +45,7 @@ public class Main extends JavaPlugin implements Listener {
     private FileConfiguration hologramsConfig;
     private File portalsFile;
     private FileConfiguration portalsConfig;
-    private Map<Location, PortalData> portalMap = new HashMap<>();
+    private final Map<Location, PortalData> portalMap = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -155,7 +156,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
 
-
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     private void saveDefaultHologramsConfig() {
         hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
         List<Map<String, Object>> defaultHolograms = new ArrayList<>();
@@ -172,7 +173,7 @@ public class Main extends JavaPlugin implements Listener {
         try {
             hologramsConfig.save(hologramsFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "发生IO异常", e);
         }
     }
 
@@ -254,7 +255,7 @@ public class Main extends JavaPlugin implements Listener {
     private void loadLanguageFiles() {
         File langFolder = new File(getDataFolder(), "lang");
         if (!langFolder.exists()) {
-            langFolder.mkdirs();
+            System.err.println("[FandTpa] 无法创建文件夹：" + langFolder.getAbsolutePath());
         }
 
         // 自动释放语言文件
