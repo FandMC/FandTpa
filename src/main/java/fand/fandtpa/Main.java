@@ -396,6 +396,7 @@ public class Main extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("hd")).setExecutor(new HologramCommand(this));
         Objects.requireNonNull(this.getCommand("fserver")).setExecutor(new FServerCommand());
         Objects.requireNonNull(this.getCommand("ftinfo")).setExecutor(new FTInfoCommand(this));
+        Objects.requireNonNull(this.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(this));
     }
 
     private void registerListeners() {

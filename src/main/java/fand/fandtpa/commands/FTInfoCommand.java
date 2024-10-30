@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public class FTInfoCommand implements CommandExecutor {
 
@@ -19,7 +20,7 @@ public class FTInfoCommand implements CommandExecutor {
 
     // 当执行 /ftinfo 时，这个方法会被调用
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("ftinfo")) {
             // 获取插件的版本信息
             String version = plugin.getDescription().getVersion();

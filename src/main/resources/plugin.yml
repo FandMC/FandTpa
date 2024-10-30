@@ -90,6 +90,10 @@ commands:
     description: 检测并显示子服玩家
     usage: /fserver <子服>
     permission: fandtpa.fserver.use
+  portalsreload:
+    description: 重载传送门
+    usage: /portalsreload
+    permission: fandtpa.portalsreload.use
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
@@ -135,4 +139,7 @@ permissions:
     default: op
   fandtpa.fserver.use:
     description: 允许让玩家进入其他子服
+    default: op
+  fandtpa.portalsreload.use:
+    description: 允许重载传送门
     default: op
