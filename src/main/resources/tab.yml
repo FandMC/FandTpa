@@ -1,6 +1,9 @@
 # 是否启用计分板
 enabled: true
 
+#刷新速度
+time : 0
+
 # Tab 页面的头部内容
 header: |
   &6欢迎 &e%player% &6来到服务器！
