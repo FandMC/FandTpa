@@ -54,7 +54,6 @@ public class Main extends JavaPlugin implements Listener {
     private File portalsFile;
     private FileConfiguration portalsConfig;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
-
     @Override
     public void onEnable() {
         this.tabConfig = this.getConfig();
@@ -74,7 +73,7 @@ public class Main extends JavaPlugin implements Listener {
             }
 
             if (tabFunctionEnabled) {
-                int time = 20;
+                int time = tabConfig.getInt("time", 20); // 从 tab.yml 获取 time 配置项，默认为 20
                 new TabListUpdater(this).runTaskTimer(this, 0L, time);
             }
 
