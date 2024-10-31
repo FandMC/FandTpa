@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,22 +60,8 @@ public class Main extends JavaPlugin implements Listener {
         checkForTabPlugin();
         configManager = new ConfigManager(this);
         try {
-            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
-            } else {
-                getLogger().info("未找到PlaceholderAPI，将在没有PlaceholderAPI支持的情况下运行。");
-            }
-            if (setupEconomy()) {
-                getLogger().info("检测到 Vault 插件，已启用经济支持。");
-            } else {
-                getLogger().warning("未检测到 Vault 插件，经济功能将无法使用。");
-            }
-
-            if (tabFunctionEnabled) {
-                int time = tabConfig.getInt("time", 20); // 从 tab.yml 获取 time 配置项，默认为 20
-                new TabListUpdater(this).runTaskTimer(this, 0L, time);
-            }
-
+            PluginsNo();
+            tabEnabled();
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
             ecoManager = new EcoManager(dbPath);
             loadHolograms();
@@ -84,13 +69,8 @@ public class Main extends JavaPlugin implements Listener {
             createDataFolders();
             loadPortals();
             startParticleEffects();
-            // 确保语言变量被正确初始化
-            language = getConfig().getString("language", "zh_CN");
-            getLogger().info("当前语言设置: " + language);
-
-            loadLanguageFiles();  // 释放并加载语言文件
-
-            configManager.reloadMessages();  // 再次加载消息
+            language();
+            configManager.reloadMessages();
             loadConfigurationFiles();
             registerCommands();
             registerListeners();
@@ -103,6 +83,32 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         otpManager.saveLogoutLocation(event.getPlayer());
+    }
+
+    private void language(){
+        language = getConfig().getString("language", "zh_CN");
+        getLogger().info("当前语言设置: " + language);
+        loadLanguageFiles();  // 释放并加载语言文件
+    }
+
+    private void tabEnabled(){
+        if (tabFunctionEnabled) {
+            int time = tabConfig.getInt("time", 20); // 从 tab.yml 获取 time 配置项，默认为 20
+            new TabListUpdater(this).runTaskTimer(this, 0L, time);
+        }
+    }
+
+    private void PluginsNo(){
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
+        } else {
+            getLogger().info("未找到PlaceholderAPI，将在没有PlaceholderAPI支持的情况下运行。");
+        }
+        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+            getLogger().info("检测到 Vault 插件，已启用经济支持。");
+        } else {
+            getLogger().warning("未检测到 Vault 插件，经济功能将无法使用。");
+        }
     }
 
     public EcoManager getEcoManager() {
@@ -211,34 +217,6 @@ public class Main extends JavaPlugin implements Listener {
             armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', line));
             armorStand.setCustomNameVisible(true);
             armorStand.setMarker(true);
-        }
-    }
-
-
-    private boolean setupEconomy() {
-        try {
-            if (getServer().getPluginManager().getPlugin("Vault") == null) {
-                return false;
-            }
-
-            // 通过反射来获取 Vault 的经济服务
-            Class<?> rspClass = Class.forName("org.bukkit.plugin.RegisteredServiceProvider");
-            Method getServicesManagerMethod = getServer().getClass().getMethod("getServicesManager");
-            Object servicesManager = getServicesManagerMethod.invoke(getServer());
-
-            Method getRegistrationMethod = servicesManager.getClass().getMethod("getRegistration", Class.class);
-            Object rsp = getRegistrationMethod.invoke(servicesManager, Class.forName("net.milkbowl.vault.economy.Economy"));
-
-            if (rsp != null) {
-                Method getProviderMethod = rspClass.getMethod("getProvider");
-                Object economy = getProviderMethod.invoke(rsp); // 获取经济服务提供者
-                return economy != null;
-            }
-
-            return false;
-        } catch (Exception e) {
-            getLogger().log(Level.WARNING, "Vault 未找到，经济功能禁用: " + e.getMessage());
-            return false;
         }
     }
 
