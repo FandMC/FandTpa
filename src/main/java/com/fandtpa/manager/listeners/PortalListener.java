@@ -1,7 +1,7 @@
 package com.fandtpa.manager.listeners;
 
 import com.fandtpa.Main;
-import com.fandtpa.PortalData;
+import com.fandtpa.util.PortalData;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

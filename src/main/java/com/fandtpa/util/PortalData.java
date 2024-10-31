@@ -1,4 +1,4 @@
-package com.fandtpa;
+package com.fandtpa.util;
 
 import org.bukkit.Location;
 

@@ -4,8 +4,9 @@ import com.fandtpa.Main;
 import com.fandtpa.util.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import com.fandtpa.event.AsyncPlayerChatEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,7 @@ public class PlayerChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        Player player = event.getTargetPlayer();
+        Player player = event.getPlayer();
         String title = plugin.getTitlesConfig().getString(player.getUniqueId().toString());
 
         if (title != null) {
