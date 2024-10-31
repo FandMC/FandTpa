@@ -1,4 +1,4 @@
-package com.fand.commands.tab;
+package com.fand.commands.TabComplete;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

@@ -1,10 +1,10 @@
 package com.fand;
 
 import com.fand.commands.command.*;
-import com.fand.commands.tab.EcoTabCompleter;
-import com.fand.commands.tab.FandTpaCommand;
-import com.fand.commands.tab.GmTabCompleter;
-import com.fand.commands.tab.HomeTabCompleter;
+import com.fand.commands.TabComplete.EcoTabCompleter;
+import com.fand.commands.TabComplete.FandTpaCommand;
+import com.fand.commands.TabComplete.GmTabCompleter;
+import com.fand.commands.TabComplete.HomeTabCompleter;
 import com.fand.manager.HologramsManager;
 import com.fand.manager.economy.EcoManager;
 import com.fand.manager.listeners.OtpManager;
