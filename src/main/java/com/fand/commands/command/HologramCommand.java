@@ -2,13 +2,14 @@ package com.fand.commands.command;
 
 import com.fand.Main;
 import com.fand.util.ChatColor;
+import com.fand.manager.HologramsManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class HologramCommand implements CommandExecutor {
-
+    private HologramsManager hologramsManager;
     private final Main plugin;
 
     public HologramCommand(Main plugin) {
@@ -17,8 +18,9 @@ public class HologramCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        hologramsManager = new HologramsManager();
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            plugin.reloadHolograms();
+            hologramsManager.reloadHolograms();
             sender.sendMessage(ChatColor.GREEN + "所有悬浮字已重载。");
             return true;
         }
