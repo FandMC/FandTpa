@@ -396,6 +396,7 @@ public class Main extends JavaPlugin implements Listener {
     private void logToConsole(String message) {
         getServer().getConsoleSender().sendMessage(message);
     }
+
     public void loadPortals() {
         portalsFile = new File(getDataFolder(), "portals.yml");
         if (!portalsFile.exists()) {
@@ -434,6 +435,7 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
     }
+
     public void startParticleEffects() {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for (PortalData portal : portalMap.values()) {
@@ -506,6 +508,7 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
     }
+
     public Map<Location, PortalData> getPortalMap() {
         return portalMap;
     }
