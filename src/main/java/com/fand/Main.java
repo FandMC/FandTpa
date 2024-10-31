@@ -1,15 +1,16 @@
 package com.fand;
 
 import com.fand.commands.command.*;
-import com.fand.manager.listeners.OtpManager;
-import com.fand.manager.listeners.PlayerChatListener;
-import com.fand.manager.listeners.PlayerQuitListener;
-import com.fand.manager.listeners.PortalListener;
 import com.fand.commands.tab.EcoTabCompleter;
 import com.fand.commands.tab.FandTpaCommand;
 import com.fand.commands.tab.GmTabCompleter;
 import com.fand.commands.tab.HomeTabCompleter;
+import com.fand.manager.HologramsManager;
 import com.fand.manager.economy.EcoManager;
+import com.fand.manager.listeners.OtpManager;
+import com.fand.manager.listeners.PlayerChatListener;
+import com.fand.manager.listeners.PlayerQuitListener;
+import com.fand.manager.listeners.PortalListener;
 import com.fand.tab.TabListUpdater;
 import com.fand.util.ChatColor;
 import com.fand.util.ConfigManager;
@@ -21,20 +22,20 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -53,8 +54,10 @@ public class Main extends JavaPlugin implements Listener {
     private File portalsFile;
     private FileConfiguration portalsConfig;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
+    private HologramsManager hologramsManager;
     @Override
     public void onEnable() {
+        hologramsManager = new HologramsManager();
         this.tabConfig = this.getConfig();
         otpManager = new OtpManager();
         checkForTabPlugin();
@@ -64,7 +67,7 @@ public class Main extends JavaPlugin implements Listener {
             tabEnabled();
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
             ecoManager = new EcoManager(dbPath);
-            loadHolograms();
+            hologramsManager.loadHolograms();
             loadTabConfig();
             createDataFolders();
             loadPortals();
@@ -113,111 +116,6 @@ public class Main extends JavaPlugin implements Listener {
 
     public EcoManager getEcoManager() {
         return ecoManager;
-    }
-
-    private void loadHolograms() {
-        hologramsFile = new File(getDataFolder(), "holograms.yml");
-        if (!hologramsFile.exists()) {
-            saveDefaultHologramsConfig(); // 保存带有默认值的配置
-        }
-        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
-
-        @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
-        if (hologramsList.isEmpty()) {
-            getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
-            //saveDefaultHologramsConfig();
-            return;
-        }
-
-        for (Map<?, ?> hologramData : hologramsList) {
-            String worldName = (String) hologramData.get("world");
-            double x = (double) hologramData.get("x");
-            double y = (double) hologramData.get("y");
-            double z = (double) hologramData.get("z");
-            Object textObject = hologramData.get("text");
-
-            if (textObject == null) {
-                getLogger().warning("Hologram text is null, skipping...");
-                continue;
-            }
-
-            // 处理单行或多行文本
-            String text;
-            if (textObject instanceof String) {
-                text = (String) textObject;
-            } else if (textObject instanceof List) {
-                List<String> textList = (List<String>) textObject;
-                text = String.join("\n", textList); // 多行文本使用换行符拼接
-            } else {
-                getLogger().warning("Hologram text format is invalid, skipping...");
-                continue;
-            }
-
-            if (text.isEmpty()) {
-                getLogger().warning("Hologram text is empty, skipping...");
-                continue;
-            }
-
-            World world = Bukkit.getWorld(worldName);
-            if (world != null) {
-                Location location = new Location(world, x, y, z);
-                spawnHologram(location, text);
-            } else {
-                getLogger().warning("World '" + worldName + "' not found for hologram at " + x + ", " + y + ", " + z);
-            }
-        }
-    }
-
-
-    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-    private void saveDefaultHologramsConfig() {
-        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
-        List<Map<String, Object>> defaultHolograms = new ArrayList<>();
-
-        Map<String, Object> exampleHologram = new HashMap<>();
-        exampleHologram.put("world", "world");
-        exampleHologram.put("x", 100.5);
-        exampleHologram.put("y", 65.0);
-        exampleHologram.put("z", 200.5);
-        exampleHologram.put("text", "欢迎来到服务器！");
-        defaultHolograms.add(exampleHologram);
-
-        hologramsConfig.set("holograms", defaultHolograms);
-        try {
-            hologramsConfig.save(hologramsFile);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "发生IO异常", e);
-        }
-    }
-
-
-
-    public void reloadHolograms() {
-        // 清除所有现有的 ArmorStand（实现清除逻辑）
-        Bukkit.getWorlds().forEach(world ->
-                world.getEntitiesByClass(ArmorStand.class).stream()
-                        .filter(armorStand -> armorStand.isMarker() && armorStand.getCustomName() != null)
-                        .forEach(ArmorStand::remove)
-        );
-
-        // 重新加载悬浮字
-        loadHolograms();
-    }
-
-    private void spawnHologram(Location location, String text) {
-        String[] lines = text.split("\n");
-        double lineSpacing = 0.25; // 每行之间的间距，调整这个值来改变行之间的距离
-
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-
-            ArmorStand armorStand = location.getWorld().spawn(location.clone().add(0, -i * lineSpacing, 0), ArmorStand.class);
-            armorStand.setGravity(false);
-            armorStand.setVisible(false);
-            armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', line));
-            armorStand.setCustomNameVisible(true);
-            armorStand.setMarker(true);
-        }
     }
 
     private void checkForTabPlugin() {
@@ -340,7 +238,7 @@ public class Main extends JavaPlugin implements Listener {
         saveConfigFile(titlesConfig, titlesFile);
     }
 
-    public void toggleVanish(org.bukkit.entity.Player player) {
+    public void toggleVanish(Player player) {
         if (player.hasMetadata("vanished")) {
             // 解除隐身状态
             player.removeMetadata("vanished", this);
@@ -348,7 +246,7 @@ public class Main extends JavaPlugin implements Listener {
             player.sendMessage(ChatColor.GREEN + "你现在已取消隐身！");
         } else {
             // 设置隐身状态
-            player.setMetadata("vanished", new org.bukkit.metadata.FixedMetadataValue(this, true));
+            player.setMetadata("vanished", new FixedMetadataValue(this, true));
             Bukkit.getOnlinePlayers().forEach(p -> p.hidePlayer(this, player));
             player.sendMessage(ChatColor.GREEN + "你现在已隐身！");
         }
