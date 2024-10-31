@@ -49,15 +49,11 @@ public class Main extends JavaPlugin implements Listener {
     private boolean tabFunctionEnabled = true;
     private EcoManager ecoManager;
     private OtpManager otpManager;
-    private File hologramsFile;
-    private FileConfiguration hologramsConfig;
-    private File portalsFile;
-    private FileConfiguration portalsConfig;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
-    private HologramsManager hologramsManager;
+
     @Override
     public void onEnable() {
-        hologramsManager = new HologramsManager();
+        HologramsManager hologramsManager = new HologramsManager();
         this.tabConfig = this.getConfig();
         otpManager = new OtpManager();
         checkForTabPlugin();
@@ -295,11 +291,11 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void loadPortals() {
-        portalsFile = new File(getDataFolder(), "portals.yml");
+        File portalsFile = new File(getDataFolder(), "portals.yml");
         if (!portalsFile.exists()) {
             saveResource("portals.yml", false);
         }
-        portalsConfig = YamlConfiguration.loadConfiguration(portalsFile);
+        FileConfiguration portalsConfig = YamlConfiguration.loadConfiguration(portalsFile);
         portalMap.clear();
 
         ConfigurationSection worldsSection = portalsConfig.getConfigurationSection("portals");

@@ -53,7 +53,6 @@ public enum ChatColor {
         return name;
     }
 
-    // 新增方法: 将颜色代码和特殊效果的字符替换为对应的 Minecraft 代码
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         StringBuilder sb = new StringBuilder();
         char[] b = textToTranslate.toCharArray();
@@ -63,7 +62,7 @@ public enum ChatColor {
                 ChatColor color = getByChar(b[i + 1]);
                 if (color != null) {
                     sb.append(color.mcCode);
-                    i++; // 跳过下一个字符，因为它是颜色代码的一部分
+                    i++;
                     continue;
                 }
             }
