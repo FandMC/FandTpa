@@ -1,4 +1,4 @@
-package fand.fandtpa.commands;
+package fand.fandtpa.commands.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

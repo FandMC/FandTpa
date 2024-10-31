@@ -1,4 +1,4 @@
-package fand.fandtpa.commands;
+package fand.fandtpa.commands.command;
 
 import fand.fandtpa.util.ChatColor; // 引入自定义的 ChatColor 枚举
 import org.bukkit.Bukkit;

@@ -1,6 +1,10 @@
 package fand.fandtpa;
 
-import fand.fandtpa.commands.*;
+import fand.fandtpa.commands.command.*;
+import fand.fandtpa.commands.tab.EcoTabCompleter;
+import fand.fandtpa.commands.tab.FandTpaCommand;
+import fand.fandtpa.commands.tab.GmTabCompleter;
+import fand.fandtpa.commands.tab.HomeTabCompleter;
 import fand.fandtpa.economy.EcoManager;
 import fand.fandtpa.listeners.*;
 import fand.fandtpa.tab.TabListUpdater;

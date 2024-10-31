@@ -1,4 +1,4 @@
-package fand.fandtpa.commands;
+package fand.fandtpa.commands.command;
 
 import fand.fandtpa.util.ChatColor;
 import fand.fandtpa.util.ConfigManager;
