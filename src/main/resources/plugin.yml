@@ -86,10 +86,6 @@ commands:
     description: 重载全息字
     usage: /hd reload
     permission: fandtpa.hd.reload
-  fserver:
-    description: 检测并显示子服玩家
-    usage: /fserver <子服>
-    permission: fandtpa.fserver.use
   portalsreload:
     description: 重载传送门
     usage: /portalsreload
@@ -136,9 +132,6 @@ permissions:
     default: op
   fandtpa.hd.reload:
     description: 允许重载悬浮字
-    default: op
-  fandtpa.fserver.use:
-    description: 允许让玩家进入其他子服
     default: op
   fandtpa.portalsreload.use:
     description: 允许重载传送门
