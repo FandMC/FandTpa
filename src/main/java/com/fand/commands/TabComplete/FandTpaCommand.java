@@ -80,7 +80,7 @@ public class FandTpaCommand implements CommandExecutor, TabCompleter {
         availableCommands.append(ChatColor.translateAlternateColorCodes('&', "&6/fandtpa &7- FandTPA插件的主命令 &e用法: /fandtpa <reload|help>\n"));
         availableCommands.append(ChatColor.translateAlternateColorCodes('&', "&6/v &7- 隐身 &e用法: /v\n"));
         availableCommands.append(ChatColor.translateAlternateColorCodes('&', "&6/hd reload &7- 重载全息字 &e用法: /hd reload\n"));
-
+        availableCommands.append(ChatColor.translateAlternateColorCodes('&', "&6/portalsreload &7- 重载传送门 &e用法: /portalsreload\n"));
         // 发送命令列表信息
         sender.sendMessage(availableCommands.toString());
     }
