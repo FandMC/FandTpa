@@ -91,7 +91,7 @@ public class Main extends JavaPlugin implements Listener {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
         } else {
-            getLogger().info("未找到PlaceholderAPI，将在没有PlaceholderAPI支持的情况下运行。");
+            getLogger().info("未找到PlaceholderAPI，计分板将会启用内置变量。");
         }
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             getLogger().info("检测到 Vault 插件，已启用经济支持。");
