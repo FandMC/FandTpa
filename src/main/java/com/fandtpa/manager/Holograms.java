@@ -1,0 +1,130 @@
+package com.fandtpa.manager;
+
+import com.fandtpa.Main;
+import com.fandtpa.util.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Holograms extends JavaPlugin {
+    private static FileConfiguration hologramsConfig;
+    private static File hologramsFile;
+    public void loadHolograms() {
+        hologramsFile = new File(getDataFolder(), "holograms.yml");
+        if (!hologramsFile.exists()) {
+            saveDefaultHologramsConfig(); // 保存带有默认值的配置
+        }
+        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
+
+        @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
+        if (hologramsList.isEmpty()) {
+            getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
+            //saveDefaultHologramsConfig();
+            return;
+        }
+
+        for (Map<?, ?> hologramData : hologramsList) {
+            String worldName = (String) hologramData.get("world");
+            double x = (double) hologramData.get("x");
+            double y = (double) hologramData.get("y");
+            double z = (double) hologramData.get("z");
+            Object textObject = hologramData.get("text");
+
+            if (textObject == null) {
+                getLogger().warning("Hologram text is null, skipping...");
+                continue;
+            }
+
+            // 处理单行或多行文本
+            String text;
+            if (textObject instanceof String) {
+                text = (String) textObject;
+            } else if (textObject instanceof List) {
+                List<String> textList = (List<String>) textObject;
+                text = String.join("\n", textList); // 多行文本使用换行符拼接
+            } else {
+                getLogger().warning("Hologram text format is invalid, skipping...");
+                continue;
+            }
+
+            if (text.isEmpty()) {
+                getLogger().warning("Hologram text is empty, skipping...");
+                continue;
+            }
+
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) {
+                Location location = new Location(world, x, y, z);
+                spawnHologram(location, text);
+            } else {
+                getLogger().warning("World '" + worldName + "' not found for hologram at " + x + ", " + y + ", " + z);
+            }
+        }
+    }
+
+
+    private static final Logger LOGGER = Logger.getLogger(Holograms.class.getName());
+    public static void saveDefaultHologramsConfig() {
+        hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
+        List<Map<String, Object>> defaultHolograms = new ArrayList<>();
+
+        Map<String, Object> exampleHologram = new HashMap<>();
+        exampleHologram.put("world", "world");
+        exampleHologram.put("x", 100.5);
+        exampleHologram.put("y", 65.0);
+        exampleHologram.put("z", 200.5);
+        exampleHologram.put("text", "欢迎来到服务器！");
+        defaultHolograms.add(exampleHologram);
+
+        hologramsConfig.set("holograms", defaultHolograms);
+        try {
+            hologramsConfig.save(hologramsFile);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "发生IO异常", e);
+        }
+    }
+
+
+
+    public void reloadHolograms() {
+        // 清除所有现有的 ArmorStand（实现清除逻辑）
+        Bukkit.getWorlds().forEach(world ->
+                world.getEntitiesByClass(ArmorStand.class).stream()
+                        .filter(armorStand -> armorStand.isMarker() && armorStand.getCustomName() != null)
+                        .forEach(ArmorStand::remove)
+        );
+
+        // 重新加载悬浮字
+        loadHolograms();
+    }
+
+    public void spawnHologram(Location location, String text) {
+        String[] lines = text.split("\n");
+        double lineSpacing = 0.25; // 每行之间的间距，调整这个值来改变行之间的距离
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+
+            ArmorStand armorStand = location.getWorld().spawn(location.clone().add(0, -i * lineSpacing, 0), ArmorStand.class);
+            armorStand.setGravity(false);
+            armorStand.setVisible(false);
+            armorStand.setCustomName(ChatColor.translateAlternateColorCodes('&', line));
+            armorStand.setCustomNameVisible(true);
+            armorStand.setMarker(true);
+        }
+    }
+}

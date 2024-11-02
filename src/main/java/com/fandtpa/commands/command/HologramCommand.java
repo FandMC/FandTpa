@@ -1,6 +1,7 @@
 package com.fandtpa.commands.command;
 
 import com.fandtpa.Main;
+import com.fandtpa.manager.Holograms;
 import com.fandtpa.util.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class HologramCommand implements CommandExecutor {
 
     private final Main plugin;
-
+    Holograms holograms;
     public HologramCommand(Main plugin) {
         this.plugin = plugin;
     }
@@ -18,7 +19,7 @@ public class HologramCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            plugin.reloadHolograms();
+            holograms.reloadHolograms();
             sender.sendMessage(ChatColor.GREEN + "所有悬浮字已重载。");
             return true;
         }
