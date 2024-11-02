@@ -43,12 +43,12 @@ public class Main extends JavaPlugin implements Listener {
     Holograms holograms;
     @Override
     public void onEnable() {
-        checkForTabPlugin();
-        this.tabConfig = this.getConfig();
-        otpManager = new OtpManager();
-        configManager = new ConfigManager(this);
-        holograms = new Holograms(this);
         try {
+            checkForTabPlugin();
+            this.tabConfig = this.getConfig();
+            otpManager = new OtpManager();
+            configManager = new ConfigManager(this);
+            holograms = new Holograms(this);
             PluginsNo();
             tabEnabled();
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
