@@ -386,5 +386,4 @@ public class Main extends JavaPlugin implements Listener {
     public Map<Location, PortalData> getPortalMap() {
         return portalMap;
     }
-
 }

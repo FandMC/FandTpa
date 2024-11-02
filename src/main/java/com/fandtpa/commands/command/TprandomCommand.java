@@ -72,7 +72,7 @@ public class TprandomCommand implements CommandExecutor {
     private Location getRandomSafeLocation(Player player) {
         Random random = new Random();
         World world = player.getWorld();
-        int maxAttempts = 10;
+        int maxAttempts = 5;
 
         for (int attempts = 0; attempts < maxAttempts; attempts++) {
             double x = player.getLocation().getX() + random.nextInt(20001) - 10000;
