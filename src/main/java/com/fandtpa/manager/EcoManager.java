@@ -1,4 +1,4 @@
-package com.fandtpa.manager.economy;
+package com.fandtpa.manager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

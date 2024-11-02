@@ -1,7 +1,7 @@
 package com.fandtpa.commands.command;
 
 import com.fandtpa.Main;
-import com.fandtpa.manager.economy.EcoManager;
+import com.fandtpa.manager.EcoManager;
 import com.fandtpa.util.ChatColor;
 import com.fandtpa.util.ConfigManager;
 import org.bukkit.command.Command;

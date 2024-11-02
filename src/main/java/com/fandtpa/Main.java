@@ -1,16 +1,9 @@
 package com.fandtpa;
 
-import com.fandtpa.commands.command.*;
-import com.fandtpa.commands.TabComplete.EcoTabCompleter;
-import com.fandtpa.commands.TabComplete.FandTpaCommand;
-import com.fandtpa.commands.TabComplete.GmTabCompleter;
-import com.fandtpa.commands.TabComplete.HomeTabCompleter;
 import com.fandtpa.manager.Holograms;
-import com.fandtpa.manager.economy.EcoManager;
+import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.listeners.OtpManager;
-import com.fandtpa.manager.listeners.PlayerChatListener;
-import com.fandtpa.manager.listeners.PlayerQuitListener;
-import com.fandtpa.manager.listeners.PortalListener;
+import com.fandtpa.register.*;
 import com.fandtpa.tab.TabListUpdater;
 import com.fandtpa.util.ChatColor;
 import com.fandtpa.util.ConfigManager;
@@ -36,7 +29,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
-
     public FileConfiguration tabConfig;
     private String language;
     private File homesFile;
@@ -49,7 +41,6 @@ public class Main extends JavaPlugin implements Listener {
     private OtpManager otpManager;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
     Holograms holograms;
-
     @Override
     public void onEnable() {
         checkForTabPlugin();
@@ -70,8 +61,8 @@ public class Main extends JavaPlugin implements Listener {
             language();
             configManager.reloadMessages();
             loadConfigurationFiles();
-            registerCommands();
-            registerListeners();
+            new Commands(this, configManager);
+            new Listeners(this, otpManager);
             logToConsole(configManager.getMessage("plugin_success"));
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
@@ -105,7 +96,7 @@ public class Main extends JavaPlugin implements Listener {
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             getLogger().info("检测到 Vault 插件，已启用经济支持。");
         } else {
-            getLogger().warning("未检测到 Vault 插件，经济功能将无法使用。");
+            getLogger().info("未检测到 Vault 插件，经济功能将无法使用。");
         }
     }
 
@@ -251,46 +242,12 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    private void registerCommands() {
-        Objects.requireNonNull(this.getCommand("tpa")).setExecutor(new TpaCommand(configManager));
-        Objects.requireNonNull(this.getCommand("tpahere")).setExecutor(new TpahereCommand(configManager));
-        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TpacceptCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TpdenyCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("home")).setExecutor(new HomeCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("home")).setTabCompleter(new HomeTabCompleter(this));
-        Objects.requireNonNull(this.getCommand("back")).setExecutor(new BackCommand(this.getLogger(), configManager));
-        Objects.requireNonNull(this.getCommand("settitle")).setExecutor(new SetTitleCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(configManager));
-        Objects.requireNonNull(this.getCommand("rtp")).setExecutor(new TprandomCommand(this));
-        Objects.requireNonNull(this.getCommand("invsee")).setExecutor(new InvseeCommand(configManager));
-        Objects.requireNonNull(this.getCommand("hat")).setExecutor(new HatCommand(configManager));
-        Objects.requireNonNull(this.getCommand("fly")).setExecutor(new FlyCommand(configManager));
-        Objects.requireNonNull(this.getCommand("gm")).setExecutor(new GmCommand(configManager));
-        Objects.requireNonNull(this.getCommand("gm")).setTabCompleter(new GmTabCompleter());
-        Objects.requireNonNull(this.getCommand("tab")).setExecutor(new TabReloadCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("eco")).setExecutor(new EcoCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("eco")).setTabCompleter(new EcoTabCompleter());
-        Objects.requireNonNull(this.getCommand("speed")).setExecutor(new SpeedCommand(configManager));
-        Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("otp")).setExecutor(new OtpCommand(otpManager, configManager));
-        Objects.requireNonNull(this.getCommand("fandtpa")).setExecutor(new FandTpaCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("fandtpa")).setTabCompleter(new FandTpaCommand(this, configManager));
-        Objects.requireNonNull(this.getCommand("v")).setExecutor(new VanishCommand(this));
-        Objects.requireNonNull(this.getCommand("hd")).setExecutor(new HologramCommand(this));
-        Objects.requireNonNull(this.getCommand("ftinfo")).setExecutor(new FTInfoCommand(this));
-        Objects.requireNonNull(this.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(this));
-    }
-
-    private void registerListeners() {
-        BackCommand backCommand = new BackCommand(getLogger(), new ConfigManager(this));
-        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(this), this);
-        getServer().getPluginManager().registerEvents(backCommand, this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(otpManager), this);
-        getServer().getPluginManager().registerEvents(new PortalListener(this), this);
-    }
 
     private void logToConsole(String message) {
         getServer().getConsoleSender().sendMessage(message);
+    }
+    public OtpManager getOtpManager() {
+        return otpManager;
     }
 
     public void loadPortals() {
