@@ -8,8 +8,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +18,26 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Holograms extends JavaPlugin {
-    private static FileConfiguration hologramsConfig;
-    private static File hologramsFile;
-    public void loadHolograms() {
-        hologramsFile = new File(getDataFolder(), "holograms.yml");
+public class Holograms {
+    private final Main plugin;
+    private FileConfiguration hologramsConfig;
+    private File hologramsFile;
+    private static final Logger LOGGER = Logger.getLogger(Holograms.class.getName());
+
+    public Holograms(Main plugin) {
+        this.plugin = plugin;
+        hologramsFile = new File(plugin.getDataFolder(), "holograms.yml");
         if (!hologramsFile.exists()) {
             saveDefaultHologramsConfig(); // 保存带有默认值的配置
         }
         hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
+    }
 
-        @NotNull List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
+    public void loadHolograms() {
+        List<Map<?, ?>> hologramsList = hologramsConfig.getMapList("holograms");
         if (hologramsList.isEmpty()) {
-            getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
-            //saveDefaultHologramsConfig();
+            saveDefaultHologramsConfig();
+            plugin.getLogger().warning("Holograms section not found in holograms.yml! Creating a default section.");
             return;
         }
 
@@ -45,7 +49,7 @@ public class Holograms extends JavaPlugin {
             Object textObject = hologramData.get("text");
 
             if (textObject == null) {
-                getLogger().warning("Hologram text is null, skipping...");
+                plugin.getLogger().warning("Hologram text is null, skipping...");
                 continue;
             }
 
@@ -57,12 +61,12 @@ public class Holograms extends JavaPlugin {
                 List<String> textList = (List<String>) textObject;
                 text = String.join("\n", textList); // 多行文本使用换行符拼接
             } else {
-                getLogger().warning("Hologram text format is invalid, skipping...");
+                plugin.getLogger().warning("Hologram text format is invalid, skipping...");
                 continue;
             }
 
             if (text.isEmpty()) {
-                getLogger().warning("Hologram text is empty, skipping...");
+                plugin.getLogger().warning("Hologram text is empty, skipping...");
                 continue;
             }
 
@@ -71,14 +75,12 @@ public class Holograms extends JavaPlugin {
                 Location location = new Location(world, x, y, z);
                 spawnHologram(location, text);
             } else {
-                getLogger().warning("World '" + worldName + "' not found for hologram at " + x + ", " + y + ", " + z);
+                plugin.getLogger().warning("World '" + worldName + "' not found for hologram at " + x + ", " + y + ", " + z);
             }
         }
     }
 
-
-    private static final Logger LOGGER = Logger.getLogger(Holograms.class.getName());
-    public static void saveDefaultHologramsConfig() {
+    public void saveDefaultHologramsConfig() {
         hologramsConfig = YamlConfiguration.loadConfiguration(hologramsFile);
         List<Map<String, Object>> defaultHolograms = new ArrayList<>();
 
@@ -98,8 +100,6 @@ public class Holograms extends JavaPlugin {
         }
     }
 
-
-
     public void reloadHolograms() {
         // 清除所有现有的 ArmorStand（实现清除逻辑）
         Bukkit.getWorlds().forEach(world ->
@@ -114,7 +114,7 @@ public class Holograms extends JavaPlugin {
 
     public void spawnHologram(Location location, String text) {
         String[] lines = text.split("\n");
-        double lineSpacing = 0.25; // 每行之间的间距，调整这个值来改变行之间的距离
+        double lineSpacing = 0.25; // 每行之间的间距
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];

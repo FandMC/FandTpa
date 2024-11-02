@@ -22,7 +22,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,13 +29,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -59,7 +56,7 @@ public class Main extends JavaPlugin implements Listener {
         this.tabConfig = this.getConfig();
         otpManager = new OtpManager();
         configManager = new ConfigManager(this);
-        holograms = new Holograms();
+        holograms = new Holograms(this);
         try {
             PluginsNo();
             tabEnabled();
@@ -136,7 +133,11 @@ public class Main extends JavaPlugin implements Listener {
     private void loadLanguageFiles() {
         File langFolder = new File(getDataFolder(), "lang");
         if (!langFolder.exists()) {
-            System.err.println("[FandTpa] 无法创建文件夹：" + langFolder.getAbsolutePath());
+            if (langFolder.mkdirs()) {
+                getLogger().info("创建语言文件夹：" + langFolder.getAbsolutePath());
+            } else {
+                getLogger().severe("无法创建语言文件夹：" + langFolder.getAbsolutePath());
+            }
         }
 
         // 自动释放语言文件
