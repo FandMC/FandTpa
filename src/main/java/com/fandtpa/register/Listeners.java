@@ -19,19 +19,10 @@ public class Listeners {
     }
 
     private void registerListeners() {
-        // 注册聊天监听器
         Bukkit.getPluginManager().registerEvents(new PlayerChatListener(plugin), plugin);
-
-        // 注册后退命令监听器
         BackCommand backCommand = new BackCommand(plugin.getLogger(), plugin.getConfigManager());
         Bukkit.getPluginManager().registerEvents(backCommand, plugin);
-
-        // 注册玩家退出监听器
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(otpManager), plugin);
-
-        // 注册传送门监听器
         Bukkit.getPluginManager().registerEvents(new PortalListener(plugin), plugin);
-
-        // 可以在这里添加更多监听器
     }
 }

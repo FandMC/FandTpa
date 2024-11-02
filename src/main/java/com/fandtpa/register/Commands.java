@@ -7,7 +7,6 @@ import com.fandtpa.commands.TabComplete.FandTpaCommand;
 import com.fandtpa.commands.TabComplete.GmTabCompleter;
 import com.fandtpa.commands.TabComplete.HomeTabCompleter;
 import com.fandtpa.util.ConfigManager;
-import org.bukkit.Bukkit;
 
 import java.util.Objects;
 

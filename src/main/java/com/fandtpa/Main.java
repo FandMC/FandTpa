@@ -155,7 +155,6 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-
     public void loadTabConfig() {
         File tabFile = new File(getDataFolder(), "tab.yml");
         if (!tabFile.exists()) {
@@ -242,7 +241,6 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-
     private void logToConsole(String message) {
         getServer().getConsoleSender().sendMessage(message);
     }
@@ -276,7 +274,6 @@ public class Main extends JavaPlugin implements Listener {
                                 double z2 = portalSection.getDouble("region.z2");
                                 String command = portalSection.getString("command");
                                 String particleEffect = portalSection.getString("particles", "");
-
                                 Location corner1 = new Location(world, x1, y1, z1);
                                 Location corner2 = new Location(world, x2, y2, z2);
                                 PortalData portalData = new PortalData(corner1, corner2, command, particleEffect);
