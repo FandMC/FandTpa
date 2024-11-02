@@ -1,7 +1,7 @@
 folia-supported: true
 name: Fandtpa
 version: 2.1
-main: com.fand.Main
+main: com.fandtpa.Main
 api-version: '1.21'
 commands:
   ftinfo:
