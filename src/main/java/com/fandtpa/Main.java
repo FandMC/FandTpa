@@ -24,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
@@ -90,10 +91,21 @@ public class Main extends JavaPlugin implements Listener {
     private void a(){
         getLogger().info("------------------------------------");
     }
+
     private void checkupdate() {
         getLogger().info("当前版本为: " + FandMCVersion);
+        CountDownLatch latch = new CountDownLatch(1);
+
         CheckUpdate updater = new CheckUpdate(this);
-        updater.check(FandMCVersion);
+        new Thread(() -> {
+            updater.check(FandMCVersion);
+            latch.countDown();
+        }).start();
+
+        try {
+            latch.await();
+        } catch (InterruptedException ignored) {
+        }
     }
 
 
