@@ -40,36 +40,53 @@ public class Main extends JavaPlugin implements Listener {
     private OtpManager otpManager;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
     Holograms holograms;
+    private CreateFile createFileUtil;
+
     @Override
     public void onEnable() {
         try {
             a();
-            checkupdate();
-            checkForTabPlugin();
-            this.tabConfig = this.getConfig();
-            otpManager = new OtpManager();
-            configManager = new ConfigManager(this);
-            holograms = new Holograms(this);
-            PluginsNo();
-            tabEnabled();
-            String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
-            ecoManager = new EcoManager(dbPath);
-            holograms.loadHolograms();
-            loadTabConfig();
-            createDataFolders();
-            loadPortals();
-            startParticleEffects();
-            language();
-            configManager.reloadMessages();
-            loadConfigurationFiles();
-            new Commands(this, configManager);
-            new Listeners(this, otpManager);
+            start();
             logToConsole(ChatColor.translateAlternateColorCodes('&',"[Fandtpa] "+ configManager.getMessage("plugin_success")));
             a();
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
         }
     }
+
+    private void start() {
+        checkupdate();
+        checkForTabPlugin();
+        this.tabConfig = this.getConfig();
+        otpManager = new OtpManager();
+        configManager = new ConfigManager(this);
+        holograms = new Holograms(this);
+        PluginsNo();
+        tabEnabled();
+        String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
+        ecoManager = new EcoManager(dbPath);
+        holograms.loadHolograms();
+        loadTabConfig();
+        createDataFolders();
+        createHomeConfig();
+        createTitlesConfig();
+        loadPortals();
+        startParticleEffects();
+        language();
+        configManager.reloadMessages();
+        loadConfigurationFiles();
+        new Commands(this, configManager);
+        new Listeners(this, otpManager);
+    }
+
+    private void createTitlesConfig() {
+        titlesFile = createFileUtil.createFile("titles.yml");
+    }
+
+    private void createHomeConfig() {
+        homesFile = createFileUtil.createFile("homes.yml");
+    }
+
     private void a(){
         getLogger().info("------------------------------------");
     }
@@ -179,31 +196,11 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void createDataFolders() {
+        createFileUtil = new CreateFile(getLogger(), getDataFolder());
         // 创建插件的主数据文件夹
         if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
             getLogger().severe("插件主数据文件夹创建失败: " + getDataFolder().getPath());
-            return;
         }
-
-        // 创建 homes.yml 和 titles.yml 文件
-        homesFile = createFile("homes.yml");
-        titlesFile = createFile("titles.yml");
-    }
-
-    private File createFile(String fileName) {
-        File file = new File(getDataFolder(), fileName);
-        if (!file.exists()) {
-            try {
-                if (file.createNewFile()) {
-                    getLogger().info(fileName + " 文件创建成功: " + file.getPath());
-                } else {
-                    getLogger().severe(fileName + " 文件创建失败: " + file.getPath());
-                }
-            } catch (IOException e) {
-                getLogger().log(Level.SEVERE, "创建 " + fileName + " 文件时发生错误: " + e.getMessage(), e);
-            }
-        }
-        return file;
     }
 
     private void loadConfigurationFiles() {
