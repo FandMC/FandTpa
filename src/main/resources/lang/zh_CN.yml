@@ -1,7 +1,7 @@
 plugin_enabled: "插件启用成功！"
 plugin_disabled: "插件已禁用"
 error_message: "发生错误: {error}"
-plugin_success: "插件启动成功！"
+plugin_success: "&a插件启动成功！"
 command_only_player: "&c该命令只能由玩家使用！"
 teleport_success: "&a你已传送到上一次死亡地点"
 no_death_location: "&c没有找到死亡地点"

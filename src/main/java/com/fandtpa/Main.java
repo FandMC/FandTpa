@@ -5,9 +5,7 @@ import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.listeners.OtpManager;
 import com.fandtpa.register.*;
 import com.fandtpa.tab.TabListUpdater;
-import com.fandtpa.util.ChatColor;
-import com.fandtpa.util.ConfigManager;
-import com.fandtpa.util.PortalData;
+import com.fandtpa.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -29,6 +27,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
+    public String FandMCVersion = "2.1";
     public FileConfiguration tabConfig;
     private String language;
     private File homesFile;
@@ -44,6 +43,8 @@ public class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
+            a();
+            checkupdate();
             checkForTabPlugin();
             this.tabConfig = this.getConfig();
             otpManager = new OtpManager();
@@ -63,11 +64,21 @@ public class Main extends JavaPlugin implements Listener {
             loadConfigurationFiles();
             new Commands(this, configManager);
             new Listeners(this, otpManager);
-            logToConsole(ChatColor.translateAlternateColorCodes('&',"&a[Fandtpa]"+ configManager.getMessage("plugin_success")));
+            logToConsole(ChatColor.translateAlternateColorCodes('&',"[Fandtpa] "+ configManager.getMessage("plugin_success")));
+            a();
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
         }
     }
+    private void a(){
+        getLogger().info("------------------------------------");
+    }
+    private void checkupdate() {
+        getLogger().info("当前版本为: " + FandMCVersion);
+        CheckUpdate updater = new CheckUpdate(this);
+        updater.check(FandMCVersion);
+    }
+
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
@@ -131,13 +142,17 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
 
-        // 自动释放语言文件
         String[] supportedLanguages = {"zh_CN.yml", "en_us.yml"};
         for (String langFileName : supportedLanguages) {
             File langFile = new File(langFolder, langFileName);
             if (!langFile.exists()) {
                 saveResource("lang/" + langFileName, false);
                 getLogger().info("释放语言文件: " + langFileName);
+
+                // 检查文件是否成功创建
+                if (!langFile.exists()) {
+                    getLogger().severe("释放语言文件失败: " + langFileName);
+                }
             }
         }
 

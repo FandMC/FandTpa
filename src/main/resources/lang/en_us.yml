@@ -1,7 +1,7 @@
 plugin_enabled: "Plugin enabled successfully!"
 plugin_disabled: "Plugin has been disabled!"
 error_message: "An error occurred: {error}"
-plugin_success: "Plugin started successfully!"
+plugin_success: "&aPlugin started successfully!"
 command_only_player: "&cThis command can only be used by players!"
 teleport_success: "&aYou have been teleported to your last death location."
 no_death_location: "&cNo death location found."
