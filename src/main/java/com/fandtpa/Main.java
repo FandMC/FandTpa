@@ -63,7 +63,7 @@ public class Main extends JavaPlugin implements Listener {
             loadConfigurationFiles();
             new Commands(this, configManager);
             new Listeners(this, otpManager);
-            logToConsole(configManager.getMessage("plugin_success"));
+            logToConsole(ChatColor.translateAlternateColorCodes('&',"&a[Fandtpa]"+ configManager.getMessage("plugin_success")));
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
         }
