@@ -1,4 +1,4 @@
-package com.fandtpa.util;
+package com.fandtpa.manager;
 
 import com.fandtpa.Main;
 import org.bukkit.configuration.file.FileConfiguration;

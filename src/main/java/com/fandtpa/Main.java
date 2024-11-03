@@ -1,8 +1,9 @@
 package com.fandtpa;
 
+import com.fandtpa.manager.ConfigManager;
 import com.fandtpa.manager.Holograms;
 import com.fandtpa.manager.EcoManager;
-import com.fandtpa.manager.listeners.OtpManager;
+import com.fandtpa.manager.OtpManager;
 import com.fandtpa.register.*;
 import com.fandtpa.tab.TabListUpdater;
 import com.fandtpa.util.*;

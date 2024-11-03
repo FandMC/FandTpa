@@ -1,8 +1,8 @@
-package com.fandtpa.commands.command;
+package com.fandtpa.commands;
 
-import com.fandtpa.manager.listeners.OtpManager;
+import com.fandtpa.manager.OtpManager;
 import com.fandtpa.util.ChatColor;
-import com.fandtpa.util.ConfigManager;
+import com.fandtpa.manager.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;

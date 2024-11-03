@@ -1,8 +1,8 @@
 package com.fandtpa.register;
 
 import com.fandtpa.Main;
-import com.fandtpa.commands.command.BackCommand;
-import com.fandtpa.manager.listeners.OtpManager;
+import com.fandtpa.commands.BackCommand;
+import com.fandtpa.manager.OtpManager;
 import com.fandtpa.manager.listeners.PlayerChatListener;
 import com.fandtpa.manager.listeners.PlayerQuitListener;
 import com.fandtpa.manager.listeners.PortalListener;

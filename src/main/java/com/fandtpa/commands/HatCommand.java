@@ -1,7 +1,7 @@
-package com.fandtpa.commands.command;
+package com.fandtpa.commands;
 
 import com.fandtpa.util.ChatColor;
-import com.fandtpa.util.ConfigManager;
+import com.fandtpa.manager.ConfigManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

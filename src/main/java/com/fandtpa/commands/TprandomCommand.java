@@ -1,4 +1,4 @@
-package com.fandtpa.commands.command;
+package com.fandtpa.commands;
 
 import com.fandtpa.Main;
 import com.fandtpa.util.ChatColor;

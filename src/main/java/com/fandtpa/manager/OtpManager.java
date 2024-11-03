@@ -1,4 +1,4 @@
-package com.fandtpa.manager.listeners;
+package com.fandtpa.manager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

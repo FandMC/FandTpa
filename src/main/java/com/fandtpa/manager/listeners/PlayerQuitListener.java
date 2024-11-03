@@ -1,5 +1,6 @@
 package com.fandtpa.manager.listeners;
 
+import com.fandtpa.manager.OtpManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
