@@ -45,6 +45,8 @@ public class Commands {
         Objects.requireNonNull(this.plugin.getCommand("hd")).setExecutor(new HologramCommand(this.plugin));
         Objects.requireNonNull(this.plugin.getCommand("ftinfo")).setExecutor(new FTInfoCommand(this.plugin));
         Objects.requireNonNull(this.plugin.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(this.plugin));
+        Objects.requireNonNull(this.plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(this.plugin));
+        Objects.requireNonNull(this.plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(this.plugin));
     }
     private void registerCommandsTabCompleter() {
         Objects.requireNonNull(this.plugin.getCommand("home")).setTabCompleter(new HomeTabCompleter(this.plugin));

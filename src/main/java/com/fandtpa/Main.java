@@ -43,6 +43,7 @@ public class Main extends JavaPlugin implements Listener {
     private final Map<Location, PortalData> portalMap = new HashMap<>();
     Holograms holograms;
     private CreateFile createFileUtil;
+    private int maxVeinMineBlocks;
 
     @Override
     public void onEnable() {
@@ -57,6 +58,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void start() {
+        maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks", 100); // 默认值为100
         checkupdate();
         checkForTabPlugin();
         this.tabConfig = this.getConfig();
@@ -386,5 +388,9 @@ public class Main extends JavaPlugin implements Listener {
 
     public Map<Location, PortalData> getPortalMap() {
         return portalMap;
+    }
+
+    public int getMaxVeinMineBlocks() {
+        return maxVeinMineBlocks;
     }
 }
