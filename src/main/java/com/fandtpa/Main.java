@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
-    public String FandMCVersion = "2.1";
+    public String FandMCVersion = "2.2";
     public FileConfiguration tabConfig;
     private String language;
     private File homesFile;
