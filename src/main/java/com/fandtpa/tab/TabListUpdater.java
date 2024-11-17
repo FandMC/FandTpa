@@ -79,4 +79,8 @@ public class TabListUpdater extends BukkitRunnable {
         double[] tps = Bukkit.getServer().getTPS();
         return String.format("§a%.2f §a%.2f §a%.2f", tps[0], tps[1], tps[2]);
     }
+
+    public int getRefreshRate() {
+        return refreshRate;
+    }
 }

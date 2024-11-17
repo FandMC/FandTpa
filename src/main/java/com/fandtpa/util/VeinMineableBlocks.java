@@ -8,7 +8,7 @@ public enum VeinMineableBlocks {
     LEAVES("_LEAVES"),
     PLANKS("_PLANKS"),
     WOOD("_WOOD"),
-    STONE("STONE"); // 添加石头的特殊处理
+    STONE("STONE"); // 特殊处理石头
 
     private final String suffix;
 
@@ -20,23 +20,18 @@ public enum VeinMineableBlocks {
         return suffix;
     }
 
-    // 检查给定的方块类型是否在可连锁挖掘的方块后缀列表中
+    /**
+     * 检查给定的方块类型是否在可连锁挖掘的方块后缀列表中
+     */
     public static boolean isVeinMineable(Material material) {
-        String materialName = material.toString();
-        // 如果是STONE，直接返回true
         if (material == Material.STONE) {
-            return true;
+            return true; // 石头始终是可连锁的
         }
         for (VeinMineableBlocks veinMineable : values()) {
-            if (materialName.endsWith(veinMineable.getSuffix())) {
-                return true;
+            if (!veinMineable.equals(STONE) && material.toString().endsWith(veinMineable.getSuffix())) {
+                return true; // 其他类型按后缀匹配
             }
         }
         return false;
-    }
-
-    // 检查是否达到STONE的最大连锁数量
-    public static boolean canMineMoreStone(int currentCount) {
-        return currentCount < 64; // 如果当前计数小于64，则允许继续连锁挖掘
     }
 }

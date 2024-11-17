@@ -132,7 +132,12 @@ public class Main extends JavaPlugin implements Listener {
 
     private void PluginsNo(){
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            getLogger().info("检测到PlaceholderAPI，已启用PlaceholderAPI支持。");
+            Plugin papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+            String version = null;
+            if (papi != null) {
+                version = papi.getDescription().getVersion();
+            }
+            getLogger().info("检测到PlaceholderAPI，PlaceholderAPI版本为:" + ChatColor.translateAlternateColorCodes('a',"a"+version) + "，已启用相关功能。");
         } else {
             getLogger().info("未找到PlaceholderAPI，计分板将会启用内置变量。");
         }

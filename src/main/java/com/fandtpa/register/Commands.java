@@ -7,6 +7,8 @@ import com.fandtpa.commands.TabComplete.FandTpaCommand;
 import com.fandtpa.commands.TabComplete.GmTabCompleter;
 import com.fandtpa.commands.TabComplete.HomeTabCompleter;
 import com.fandtpa.manager.ConfigManager;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 
 import java.util.Objects;
 
@@ -22,31 +24,39 @@ public class Commands {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(this.plugin.getCommand("tpa")).setExecutor(new TpaCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("tpahere")).setExecutor(new TpahereCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("tpaccept")).setExecutor(new TpacceptCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("tpdeny")).setExecutor(new TpdenyCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("home")).setExecutor(new HomeCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("back")).setExecutor(new BackCommand(this.plugin.getLogger(), configManager));
-        Objects.requireNonNull(this.plugin.getCommand("settitle")).setExecutor(new SetTitleCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("suicide")).setExecutor(new SuicideCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("rtp")).setExecutor(new TprandomCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("invsee")).setExecutor(new InvseeCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("hat")).setExecutor(new HatCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("fly")).setExecutor(new FlyCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("gm")).setExecutor(new GmCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("tab")).setExecutor(new TabReloadCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("eco")).setExecutor(new EcoCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("speed")).setExecutor(new SpeedCommand(configManager));
-        Objects.requireNonNull(this.plugin.getCommand("money")).setExecutor(new MoneyCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("otp")).setExecutor(new OtpCommand(this.plugin.getOtpManager(), configManager));
-        Objects.requireNonNull(this.plugin.getCommand("fandtpa")).setExecutor(new FandTpaCommand(this.plugin, configManager));
-        Objects.requireNonNull(this.plugin.getCommand("v")).setExecutor(new VanishCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("hd")).setExecutor(new HologramCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("ftinfo")).setExecutor(new FTInfoCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(this.plugin));
-        Objects.requireNonNull(this.plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(this.plugin));
+        registerCommand("tpa", new TpaCommand(configManager));
+        registerCommand("tpahere", new TpahereCommand(configManager));
+        registerCommand("tpaccept", new TpacceptCommand(this.plugin, configManager));
+        registerCommand("tpdeny", new TpdenyCommand(this.plugin, configManager));
+        registerCommand("home", new HomeCommand(this.plugin, configManager));
+        registerCommand("back", new BackCommand(this.plugin.getLogger(), configManager));
+        registerCommand("settitle", new SetTitleCommand(this.plugin, configManager));
+        registerCommand("suicide", new SuicideCommand(configManager));
+        registerCommand("rtp", new TprandomCommand(this.plugin));
+        registerCommand("invsee", new InvseeCommand(configManager));
+        registerCommand("hat", new HatCommand(configManager));
+        registerCommand("fly", new FlyCommand(configManager));
+        registerCommand("gm", new GmCommand(configManager));
+        registerCommand("tab", new TabReloadCommand(this.plugin, configManager));
+        registerCommand("eco", new EcoCommand(this.plugin, configManager));
+        registerCommand("speed", new SpeedCommand(configManager));
+        registerCommand("money", new MoneyCommand(this.plugin, configManager));
+        registerCommand("otp", new OtpCommand(this.plugin.getOtpManager(), configManager));
+        registerCommand("fandtpa", new FandTpaCommand(this.plugin, configManager));
+        registerCommand("v", new VanishCommand(this.plugin));
+        registerCommand("hd", new HologramCommand(this.plugin));
+        registerCommand("ftinfo", new FTInfoCommand(this.plugin));
+        registerCommand("portalsreload", new ReloadPortalsCommand(this.plugin));
+        registerCommand("toggleVeinMine", new VeinMineCommand(this.plugin));
+    }
+    private void registerCommand(String commandName, CommandExecutor executor) {
+        PluginCommand command = this.plugin.getCommand(commandName);
+        if (command == null) {
+            this.plugin.getLogger().warning("指令 '" + commandName + "' 未在 plugin.yml 中定义，跳过注册。");
+        } else {
+            command.setExecutor(executor);
+            this.plugin.getLogger().info("指令 '" + commandName + "' 注册成功。");
+        }
     }
     private void registerCommandsTabCompleter() {
         Objects.requireNonNull(this.plugin.getCommand("home")).setTabCompleter(new HomeTabCompleter(this.plugin));
