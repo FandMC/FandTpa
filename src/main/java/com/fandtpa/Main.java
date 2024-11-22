@@ -59,7 +59,7 @@ public class Main extends JavaPlugin implements Listener {
 
     private void start() {
         maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks", 100); // 默认值为100
-        checkupdate();
+        getcheckupdate();
         checkForTabPlugin();
         this.tabConfig = this.getConfig();
         otpManager = new OtpManager();
@@ -95,6 +95,21 @@ public class Main extends JavaPlugin implements Listener {
         getLogger().info("------------------------------------");
     }
 
+    private void getcheckupdate(){
+        if (!getConfig().contains("checkupdate") || getConfig().get("checkupdate") == null) {
+            getLogger().warning("配置 'checkupdate' 未指定值，默认为 false。");
+            getConfig().set("checkupdate", false); // 设置默认值为 false
+            saveConfig(); // 保存到配置文件
+        }
+
+        // 根据配置决定是否启用更新检查
+        if (getConfig().getBoolean("checkupdate")) {
+            checkupdate();
+        } else {
+            getLogger().info("更新检查已被禁用。");
+        }
+    }
+
     private void checkupdate() {
         getLogger().info("当前版本为: " + FandMCVersion);
         CountDownLatch latch = new CountDownLatch(1);
@@ -108,9 +123,9 @@ public class Main extends JavaPlugin implements Listener {
         try {
             latch.await();
         } catch (InterruptedException ignored) {
+            getLogger().warning("更新检查线程被中断！");
         }
     }
-
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
