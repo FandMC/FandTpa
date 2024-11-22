@@ -5,7 +5,7 @@ import com.fandtpa.manager.Holograms;
 import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.OtpManager;
 import com.fandtpa.register.*;
-import com.fandtpa.tab.TabListUpdater;
+import com.fandtpa.util.TabListUpdater;
 import com.fandtpa.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

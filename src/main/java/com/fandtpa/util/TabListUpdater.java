@@ -1,4 +1,4 @@
-package com.fandtpa.tab;
+package com.fandtpa.util;
 
 import com.fandtpa.Main;
 import net.kyori.adventure.text.Component;
@@ -80,16 +80,31 @@ public class TabListUpdater extends BukkitRunnable {
     // 获取格式化的TPS信息
     private String getFormattedTPS3() {
         double[] tps = Bukkit.getServer().getTPS();
-        return String.format("§a%.2f §a%.2f §a%.2f", tps[0], tps[1], tps[2]);
+        return String.format("%s %s %s", formatTPS(tps[0]), formatTPS(tps[1]), formatTPS(tps[2]));
     }
+
     private String getFormattedTPS2() {
         double[] tps = Bukkit.getServer().getTPS();
-        return String.format("§a%.2f §a%.2f", tps[0], tps[1]);
+        return String.format("%s %s", formatTPS(tps[0]), formatTPS(tps[1]));
     }
+
     private String getFormattedTPS1() {
         double[] tps = Bukkit.getServer().getTPS();
-        return String.format("§a%.2f", tps[0]);
+        return formatTPS(tps[0]);
     }
+
+    private String formatTPS(double tps) {
+        if (tps > 20.01) {
+            return String.format("§a%.2f*", tps); // 标记为绿色且加 * 号
+        } else if (tps >= 18) {
+            return String.format("§a%.2f", tps); // 正常绿色
+        } else if (tps >= 15) {
+            return String.format("§e%.2f", tps); // 黄色警告
+        } else {
+            return String.format("§c%.2f", tps); // 红色警告
+        }
+    }
+
 
     public int getRefreshRate() {
         return refreshRate;
