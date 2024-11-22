@@ -70,14 +70,25 @@ public class TabListUpdater extends BukkitRunnable {
                 .replace("%x%", String.valueOf(player.getLocation().getBlockX()))
                 .replace("%y%", String.valueOf(player.getLocation().getBlockY()))
                 .replace("%z%", String.valueOf(player.getLocation().getBlockZ()))
-                .replace("%tps%", getFormattedTPS())
+                .replace("%tps%", getFormattedTPS3())
+                .replace("%tps3%", getFormattedTPS3())
+                .replace("%tps2%", getFormattedTPS2())
+                .replace("%tps1%", getFormattedTPS1())
                 .replace("%ping%", String.valueOf(player.getPing()));
     }
 
     // 获取格式化的TPS信息
-    private String getFormattedTPS() {
+    private String getFormattedTPS3() {
         double[] tps = Bukkit.getServer().getTPS();
         return String.format("§a%.2f §a%.2f §a%.2f", tps[0], tps[1], tps[2]);
+    }
+    private String getFormattedTPS2() {
+        double[] tps = Bukkit.getServer().getTPS();
+        return String.format("§a%.2f §a%.2f", tps[0], tps[1]);
+    }
+    private String getFormattedTPS1() {
+        double[] tps = Bukkit.getServer().getTPS();
+        return String.format("§a%.2f", tps[0]);
     }
 
     public int getRefreshRate() {
