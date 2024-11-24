@@ -37,7 +37,7 @@ public class FTInfoCommand implements CommandExecutor {
 
             // 向玩家发送信息
             sender.sendMessage(ChatColor.GREEN + "FandTPA 插件版本: " + ChatColor.YELLOW + version);
-            sender.sendMessage(ChatColor.GREEN + "开发者: " + ChatColor.AQUA + "Fand");
+            sender.sendMessage(ChatColor.GREEN + "开发者: " + ChatColor.AQUA + "FandMC团队(创始人20018)");
             sender.sendMessage(placeholderMessage);
             sender.sendMessage(ChatColor.GREEN + "感谢使用本插件！");
             return true;

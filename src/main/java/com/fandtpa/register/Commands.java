@@ -48,6 +48,7 @@ public class Commands {
         registerCommand("ftinfo", new FTInfoCommand(this.plugin));
         registerCommand("portalsreload", new ReloadPortalsCommand(this.plugin));
         registerCommand("toggleVeinMine", new VeinMineCommand(this.plugin));
+        registerCommand("papihelp", new papihelpCommand(this.plugin));
     }
     private void registerCommand(String commandName, CommandExecutor executor) {
         PluginCommand command = this.plugin.getCommand(commandName);

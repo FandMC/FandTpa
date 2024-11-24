@@ -152,9 +152,14 @@ public class Main extends JavaPlugin implements Listener {
             if (papi != null) {
                 version = "a"+papi.getDescription().getVersion();
             }
-            getLogger().info("检测到PlaceholderAPI，PlaceholderAPI版本为:" + ChatColor.translateAlternateColorCodes('&',version) + "，已启用相关功能。");
+
+            if (version != null) {
+                getLogger().info("检测到PlaceholderAPI，PlaceholderAPI版本为:" + ChatColor.translateAlternateColorCodes('&',version) + "，已启用相关功能。");
+            }else{
+                getLogger().info("检测到PlaceholderAPI，但是无法检测到具体版本，变量功能可能会出现问题。");
+            }
         } else {
-            getLogger().info("未找到PlaceholderAPI，计分板将会启用内置变量。");
+            getLogger().info("未找到PlaceholderAPI，将会启用内置变量。");
         }
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             getLogger().info("检测到 Vault 插件，已启用经济支持。");
