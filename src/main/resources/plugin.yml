@@ -94,6 +94,10 @@ commands:
     description: 连锁挖矿
     usage: /toggleVeinMine
     permission: fandtpa.toggleVeinMine.use
+  papihelp:
+    description: 查询变量
+    usage: /papihelp
+    permission: fandtpa.papihelp.use
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
@@ -142,4 +146,7 @@ permissions:
     default: op
   fandtpa.toggleVeinMine.set:
     description: 连锁挖矿权限
+    default: op
+  fandtpa.papihelp.set:
+    description: 查询变量权限
     default: op
