@@ -4,7 +4,7 @@ import com.fandtpa.manager.ConfigManager;
 import com.fandtpa.manager.Holograms;
 import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.OtpManager;
-import com.fandtpa.register.*;
+import com.fandtpa.manager.register.*;
 import com.fandtpa.util.TabListUpdater;
 import com.fandtpa.util.*;
 import org.bukkit.Bukkit;

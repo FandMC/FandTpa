@@ -15,7 +15,7 @@ public class CheckUpdate {
     }
 
     public void check(String currentVersion) {
-        new Thread(() -> {
+        /*new Thread(() -> {
             try {
                 URL url = new URL("https://api.fandmc.cn/fandtpa/update.json");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -46,6 +46,7 @@ public class CheckUpdate {
             } catch (Exception e) {
                 plugin.getLogger().severe("检查更新时发生错误: " + e.getMessage());
             }
-        }).start();
+        }).start();*/
+        plugin.getLogger().severe("服务器正在维护,目前为最新版本?");
     }
 }

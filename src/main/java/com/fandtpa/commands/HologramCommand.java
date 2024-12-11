@@ -1,6 +1,7 @@
 package com.fandtpa.commands;
 
 import com.fandtpa.Main;
+import com.fandtpa.manager.ConfigManager;
 import com.fandtpa.manager.Holograms;
 import com.fandtpa.util.ChatColor;
 import org.bukkit.command.Command;
@@ -12,18 +13,20 @@ public class HologramCommand implements CommandExecutor {
 
     private final Main plugin;
     Holograms holograms;
-    public HologramCommand(Main plugin) {
+    private final ConfigManager configManager;
+    public HologramCommand(Main plugin, ConfigManager configManager) {
         this.plugin = plugin;
+        this.configManager = configManager;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             holograms.reloadHolograms();
-            sender.sendMessage(ChatColor.GREEN + "所有悬浮字已重载。");
+            sender.sendMessage(ChatColor.GREEN + "Done");
             return true;
         }
-        sender.sendMessage(ChatColor.RED + "用法: /hd reload");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("hd_usage")));
         return false;
     }
 }

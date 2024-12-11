@@ -1,4 +1,4 @@
-package com.fandtpa.register;
+package com.fandtpa.manager.register;
 
 import com.fandtpa.Main;
 import com.fandtpa.commands.*;
@@ -44,7 +44,7 @@ public class Commands {
         registerCommand("otp", new OtpCommand(this.plugin.getOtpManager(), configManager));
         registerCommand("fandtpa", new FandTpaCommand(this.plugin, configManager));
         registerCommand("v", new VanishCommand(this.plugin));
-        registerCommand("hd", new HologramCommand(this.plugin));
+        registerCommand("hd", new HologramCommand(this.plugin, configManager));
         registerCommand("ftinfo", new FTInfoCommand(this.plugin));
         registerCommand("portalsreload", new ReloadPortalsCommand(this.plugin));
         registerCommand("toggleVeinMine", new VeinMineCommand(this.plugin));
@@ -53,10 +53,10 @@ public class Commands {
     private void registerCommand(String commandName, CommandExecutor executor) {
         PluginCommand command = this.plugin.getCommand(commandName);
         if (command == null) {
-            this.plugin.getLogger().warning("指令 '" + commandName + "' 未在 plugin.yml 中定义，跳过注册。");
+            this.plugin.getLogger().warning("指令'" + commandName +"' 未在plugin.yml中定义，跳过注册。");
         } else {
             command.setExecutor(executor);
-            this.plugin.getLogger().info("指令 '" + commandName + "' 注册成功。");
+            this.plugin.getLogger().info("指令'" + commandName +"' 注册成功。");
         }
     }
     private void registerCommandsTabCompleter() {

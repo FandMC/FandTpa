@@ -1,7 +1,7 @@
 package com.fandtpa.commands;
 
 import com.fandtpa.Main;
-import com.fandtpa.manager.listeners.VeinMineListener;
+import com.fandtpa.listeners.VeinMineListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -8,215 +8,113 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
-
-public class InvseeCommand implements CommandExecutor {
+public class InvseeCommand implements CommandExecutor, Listener {
 
     private final ConfigManager configManager;
-    private final Map<Material, String> materialNames;
-    private final boolean isHeadless;
 
     public InvseeCommand(ConfigManager configManager) {
         this.configManager = configManager;
-        this.materialNames = loadMaterialNames(); // 加载物品的中文名称
-        this.isHeadless = GraphicsEnvironment.isHeadless(); // 检测是否为无头环境
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (args.length == 0 || args.length > 2) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("invsee_usage")));
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "只有玩家可以使用这个命令！");
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        // 权限检查
+        if (!player.hasPermission("fandtpa.invsee.use")) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
+            return true;
+        }
+
+        if (args.length != 1) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("invsee_usage")));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
 
         if (target == null || !target.isOnline()) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("invsee_player_not_found")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("invsee_player_not_found")));
             return true;
         }
 
-        if (isHeadless || !(sender instanceof Player)) {
-            if (args.length == 1) {
-                displayInventory(sender, target);
-            } else if (args.length == 2) {
-                modifyInventory(sender, target, args[1]);
-            }
-        } else {
-            openCustomInventoryViewForConsole(target);
-        }
+        // 创建目标玩家的背包界面
+        openInventory(player, target);
 
         return true;
     }
 
-    private void displayInventory(CommandSender sender, Player target) {
-        ItemStack[] inventoryContents = target.getInventory().getContents();
-        StringBuilder inventoryDisplay = new StringBuilder("玩家 " + target.getName() + " 的背包内容:\n");
+    private void openInventory(Player viewer, Player target) {
+        // 创建一个容量为 45 的自定义背包界面
+        Inventory inventory = Bukkit.createInventory(viewer, 54, "查看 " + target.getName() + " 的背包");
 
-        for (int i = 0; i < inventoryContents.length; i++) {
-            ItemStack item = inventoryContents[i];
-            if (item != null && item.getType() != Material.AIR) {
-                String itemName = materialNames.getOrDefault(item.getType(), item.getType().toString());
-                inventoryDisplay.append("槽位 ").append(i).append(": ").append(itemName).append(" x").append(item.getAmount()).append("\n");
-            } else {
-                inventoryDisplay.append("槽位 ").append(i).append(": 空\n");
-            }
+        // 将目标玩家的背包内容填充到自定义的背包界面
+        // 背包内容放在前 27 格（上面三行）
+        inventory.setContents(target.getInventory().getContents());
+
+        // 将目标玩家的物品栏内容放在第 28-36 格
+        inventory.setItem(27, target.getInventory().getItemInMainHand());
+        inventory.setItem(28, target.getInventory().getItemInOffHand());
+
+        // 将目标玩家的装备放在 36-44 格（盔甲和副手）
+        ItemStack[] armorContents = target.getInventory().getArmorContents();
+        for (int i = 0; i < armorContents.length; i++) {
+            inventory.setItem(36 + i, armorContents[i]);
         }
 
-        sender.sendMessage(inventoryDisplay.toString());
+        // 打开背包界面
+        viewer.openInventory(inventory);
     }
 
-    private void modifyInventory(CommandSender sender, Player target, String slotArg) {
-        try {
-            int slot = Integer.parseInt(slotArg);
-            if (slot < 0 || slot >= target.getInventory().getSize()) {
-                sender.sendMessage(ChatColor.RED + "无效的槽位号。");
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
+        // 判断是否是查看其他玩家背包的界面
+        if (event.getView().getTitle().startsWith("查看 ")) {
+            // 只有目标背包的查看者才可操作
+            if (!player.hasPermission("fandtpa.invsee.use")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
                 return;
             }
 
-            target.getInventory().setItem(slot, null);
-            sender.sendMessage(ChatColor.GREEN + "成功清除玩家 " + target.getName() + " 的第 " + slot + " 个槽位的物品。");
-            target.updateInventory();
-        } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "槽位号必须是一个数字。");
-        }
-    }
+            Player target = Bukkit.getPlayer(event.getView().getTitle().substring(3).split(" ")[0]);
 
-    private void openCustomInventoryViewForConsole(Player target) {
-        JFrame frame = new JFrame("查看玩家背包: " + target.getName());
-        frame.setLayout(new GridLayout(6, 9));
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            if (target == null || !target.isOnline()) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("invsee_player_not_found")));
+                return;
+            }
 
-        ItemStack[] inventoryContents = target.getInventory().getContents();
+            // 获取点击的物品
+            ItemStack clickedItem = event.getCurrentItem();
 
-        for (int i = 0; i < inventoryContents.length; i++) {
-            JButton button = createInventoryButton(target, i, inventoryContents[i]);
-            frame.add(button);
-        }
-
-        ItemStack offHandItem = target.getInventory().getItemInOffHand();
-        JButton offHandButton = createInventoryButton(target, 40, offHandItem); // 副手槽位
-        frame.add(offHandButton);
-
-        ItemStack[] armorContents = target.getInventory().getArmorContents();
-        for (int i = 0; i < armorContents.length; i++) {
-            JButton button = createInventoryButton(target, 36 + i, armorContents[i]); // 盔甲槽位从36到39
-            frame.add(button);
-        }
-
-        frame.setVisible(true);
-    }
-
-    private JButton createInventoryButton(Player target, int slot, ItemStack item) {
-        String itemName = "空";
-        if (item != null && item.getType() != Material.AIR) {
-            itemName = materialNames.getOrDefault(item.getType(), item.getType().toString());
-        }
-
-        JButton button = new JButton(itemName);
-
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    target.getInventory().setItem(slot, null);
-                    updateInventoryForPlayer(target);
-                    button.setText("空");
-                } else if (SwingUtilities.isRightMouseButton(e)) {
-                    String itemType = JOptionPane.showInputDialog("输入物品类型（英文）:");
-                    if (itemType != null && !itemType.trim().isEmpty()) {
-                        try {
-                            ItemStack newItem = new ItemStack(Material.valueOf(itemType.toUpperCase()));
-                            target.getInventory().setItem(slot, newItem);
-                            updateInventoryForPlayer(target);
-                            button.setText(materialNames.getOrDefault(newItem.getType(), newItem.getType().toString()));
-                        } catch (IllegalArgumentException ex) {
-                            JOptionPane.showMessageDialog(null, "无效的物品类型！");
-                        }
-                    }
+            if (clickedItem != null && clickedItem.getType() != Material.AIR) {
+                // 允许随意拿取或放入物品
+                if (event.getAction().name().contains("DROP")) {
+                    // 放物品到目标背包
+                    target.getInventory().addItem(clickedItem);
+                } else if (event.getAction().name().contains("PICKUP")) {
+                    // 拿走物品
+                    target.getInventory().removeItem(clickedItem);
                 }
             }
-        });
 
-        return button;
-    }
-
-    private void updateInventoryForPlayer(Player player) {
-        player.updateInventory();
-    }
-
-    private Map<Material, String> loadMaterialNames() {
-        Map<Material, String> names = new HashMap<>();
-        names.put(Material.AIR, "空气");
-        names.put(Material.STONE, "石头");
-        names.put(Material.GRANITE, "花岗岩");
-        names.put(Material.POLISHED_GRANITE, "磨制花岗岩");
-        names.put(Material.DIORITE, "闪长岩");
-        names.put(Material.POLISHED_DIORITE, "磨制闪长岩");
-        names.put(Material.ANDESITE, "安山岩");
-        names.put(Material.POLISHED_ANDESITE, "磨制安山岩");
-        names.put(Material.COBBLED_DEEPSLATE, "深板岩");
-        names.put(Material.POLISHED_DEEPSLATE, "磨制深板岩");
-        names.put(Material.CALCITE, "方解石");
-        names.put(Material.TUFF, "凝灰岩");
-        names.put(Material.GRASS_BLOCK, "草方块");
-        names.put(Material.DIRT, "泥土");
-        names.put(Material.COARSE_DIRT, "砂土");
-        names.put(Material.PODZOL, "灰化土");
-        names.put(Material.ROOTED_DIRT, "根系泥土");
-        names.put(Material.MUD, "泥");
-        names.put(Material.CRIMSON_NYLIUM, "绯红菌岩");
-        names.put(Material.WARPED_NYLIUM, "诡异菌岩");
-        names.put(Material.COBBLESTONE, "圆石");
-        names.put(Material.OAK_PLANKS, "橡木板");
-        names.put(Material.SPRUCE_PLANKS, "云杉木板");
-        names.put(Material.BIRCH_PLANKS, "白桦木板");
-        names.put(Material.JUNGLE_PLANKS, "丛林木板");
-        names.put(Material.ACACIA_PLANKS, "金合欢木板");
-        names.put(Material.CHERRY_PLANKS, "樱桃木板");
-        names.put(Material.DARK_OAK_PLANKS, "黑橡木板");
-        names.put(Material.MANGROVE_PLANKS, "红树木板");
-        names.put(Material.BAMBOO_PLANKS, "竹木板");
-        names.put(Material.CRIMSON_PLANKS, "绯红木板");
-        names.put(Material.WARPED_PLANKS, "诡异木板");
-        names.put(Material.SAND, "沙子");
-        names.put(Material.RED_SAND, "红沙");
-        names.put(Material.GRAVEL, "沙砾");
-        names.put(Material.COAL_ORE, "煤矿石");
-        names.put(Material.IRON_ORE, "铁矿石");
-        names.put(Material.COPPER_ORE, "铜矿石");
-        names.put(Material.GOLD_ORE, "金矿石");
-        names.put(Material.DIAMOND_ORE, "钻石矿石");
-        names.put(Material.NETHER_GOLD_ORE, "下界金矿石");
-        names.put(Material.NETHER_QUARTZ_ORE, "下界石英矿石");
-        names.put(Material.ANCIENT_DEBRIS, "远古残骸");
-        names.put(Material.COAL_BLOCK, "煤炭块");
-        names.put(Material.IRON_BLOCK, "铁块");
-        names.put(Material.GOLD_BLOCK, "金块");
-        names.put(Material.DIAMOND_BLOCK, "钻石块");
-        names.put(Material.NETHERITE_BLOCK, "下界合金块");
-        names.put(Material.AMETHYST_BLOCK, "紫水晶块");
-        names.put(Material.LAPIS_BLOCK, "青金石块");
-        names.put(Material.COPPER_BLOCK, "铜块");
-        names.put(Material.REDSTONE_ORE, "红石矿石");
-        names.put(Material.DEEPSLATE_REDSTONE_ORE, "深板岩红石矿石");
-        names.put(Material.EMERALD_ORE, "绿宝石矿石");
-        names.put(Material.DEEPSLATE_EMERALD_ORE, "深板岩绿宝石矿石");
-        names.put(Material.IRON_INGOT, "铁锭");
-        names.put(Material.GOLD_INGOT, "金锭");
-        names.put(Material.COPPER_INGOT, "铜锭");
-        names.put(Material.DIAMOND, "钻石");
-        names.put(Material.EMERALD, "绿宝石");
-
-        return names;
+            event.setCancelled(true);  // 禁止默认的背包操作，防止直接放置或拿取
+        }
     }
 }

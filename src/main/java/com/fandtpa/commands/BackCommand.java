@@ -53,8 +53,5 @@ public class BackCommand implements CommandExecutor, Listener {
         UUID playerUUID = player.getUniqueId();
         Location deathLocation = player.getLocation();
         deathLocations.put(playerUUID, deathLocation);
-        logger.info(configManager.getMessage("log_death_location_recorded")
-                .replace("{player}", player.getName())
-                .replace("{location}", deathLocation.toString()));
     }
 }

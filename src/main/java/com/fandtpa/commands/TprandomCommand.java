@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+@SuppressWarnings("ALL")
 public class TprandomCommand implements CommandExecutor {
 
     private final Main plugin;

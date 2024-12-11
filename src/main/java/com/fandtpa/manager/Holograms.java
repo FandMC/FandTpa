@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class Holograms {
     private final Main plugin;
     private FileConfiguration hologramsConfig;
-    private File hologramsFile;
+    private final File hologramsFile;
     private static final Logger LOGGER = Logger.getLogger(Holograms.class.getName());
 
     public Holograms(Main plugin) {

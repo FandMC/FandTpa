@@ -56,4 +56,8 @@ public class ConfigManager {
     public String getMessage(String key) {
         return messages.getOrDefault(key, "§c[Missing language key: " + key + "]");
     }
+
+    public Logger getLogger() {
+        return logger;
+    }
 }

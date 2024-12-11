@@ -1,4 +1,4 @@
-package com.fandtpa.manager.listeners;
+package com.fandtpa.listeners;
 
 import com.fandtpa.Main;
 import com.fandtpa.commands.VeinMineCommand;

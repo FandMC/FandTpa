@@ -1,11 +1,11 @@
-package com.fandtpa.register;
+package com.fandtpa.manager.register;
 
 import com.fandtpa.Main;
 import com.fandtpa.commands.BackCommand;
 import com.fandtpa.manager.OtpManager;
-import com.fandtpa.manager.listeners.PlayerChatListener;
-import com.fandtpa.manager.listeners.PlayerQuitListener;
-import com.fandtpa.manager.listeners.PortalListener;
+import com.fandtpa.listeners.PlayerChatListener;
+import com.fandtpa.listeners.PlayerQuitListener;
+import com.fandtpa.listeners.PortalListener;
 import org.bukkit.Bukkit;
 
 public class Listeners {

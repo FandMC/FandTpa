@@ -8,7 +8,7 @@ public enum VeinMineableBlocks {
     LEAVES("_LEAVES"),
     PLANKS("_PLANKS"),
     WOOD("_WOOD"),
-    STONE("STONE"); // 特殊处理石头
+    STONE("STONE");
 
     private final String suffix;
 
