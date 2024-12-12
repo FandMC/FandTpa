@@ -18,12 +18,10 @@ public class PortalListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Location to = event.getTo();
-        if (to != null) {
-            for (PortalData portalData : plugin.getPortalMap().values()) {
-                if (portalData.isInside(to)) {
-                    plugin.executePortalCommand(event.getPlayer(), portalData);
-                    break;
-                }
+        for (PortalData portalData : plugin.getPortalMap().values()) {
+            if (portalData.isInside(to)) {
+                plugin.executePortalCommand(event.getPlayer(), portalData);
+                break;
             }
         }
     }

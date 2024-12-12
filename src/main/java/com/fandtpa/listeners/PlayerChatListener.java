@@ -25,13 +25,6 @@ public class PlayerChatListener implements Listener {
         Player player = event.getPlayer();
         String title = plugin.getTitlesConfig().getString(player.getUniqueId().toString());
 
-        if (title != null) {
-            // 如果称号没有 []，自动添加
-            if (!title.startsWith("[") && !title.endsWith("]")) {
-                title = "[" + title + "]";
-            }
-        }
-
         // 使用 ChatColor.translateAlternateColorCodes 将 & 颜色代码转换为 ChatColor
         String message = event.getMessage();
         message = ChatColor.translateAlternateColorCodes('&', message);

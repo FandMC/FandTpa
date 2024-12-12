@@ -1,4 +1,4 @@
-package com.fandtpa.manager.register;
+package com.fandtpa.register;
 
 import com.fandtpa.Main;
 import com.fandtpa.commands.*;

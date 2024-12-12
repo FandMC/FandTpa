@@ -47,6 +47,6 @@ public class CheckUpdate {
                 plugin.getLogger().severe("检查更新时发生错误: " + e.getMessage());
             }
         }).start();*/
-        plugin.getLogger().severe("服务器正在维护,目前为最新版本?");
+        plugin.getLogger().severe("服务器正在维护,目前为最新版本=?");
     }
 }

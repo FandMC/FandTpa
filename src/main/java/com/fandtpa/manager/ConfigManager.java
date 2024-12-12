@@ -33,14 +33,6 @@ public class ConfigManager {
 
     private void loadMessages() {
         File langFolder = new File(plugin.getDataFolder(), "lang");
-        if (!langFolder.exists()) {
-            if (langFolder.mkdirs()) {
-                plugin.getLogger().info("创建语言文件夹：" + langFolder.getAbsolutePath());
-            } else {
-                plugin.getLogger().severe("无法创建语言文件夹：" + langFolder.getAbsolutePath());
-            }
-        }
-
         File langFile = new File(langFolder, language + ".yml");
         if (!langFile.exists()) {
             langFile = new File(langFolder, "zh_CN.yml");

@@ -4,7 +4,7 @@ import com.fandtpa.manager.ConfigManager;
 import com.fandtpa.manager.Holograms;
 import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.OtpManager;
-import com.fandtpa.manager.register.*;
+import com.fandtpa.register.*;
 import com.fandtpa.util.TabListUpdater;
 import com.fandtpa.util.*;
 import org.bukkit.Bukkit;
@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
-    public String FandMCVersion = "2.2";
+    public String FandMCVersion = "2.3";
     public FileConfiguration tabConfig;
     private String language;
     private File homesFile;
@@ -44,7 +43,8 @@ public class Main extends JavaPlugin implements Listener {
     Holograms holograms;
     private CreateFile createFileUtil;
     private int maxVeinMineBlocks;
-
+    private final String langurl = "lang";
+    private final String tabname = "tab.yml";
     @Override
     public void onEnable() {
         try {
@@ -190,7 +190,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void loadLanguageFiles() {
-        File langFolder = new File(getDataFolder(), "lang");
+        File langFolder = new File(getDataFolder(), langurl);
         if (!langFolder.exists()) {
             if (langFolder.mkdirs()) {
                 getLogger().info("创建语言文件夹：" + langFolder.getAbsolutePath());
@@ -203,7 +203,7 @@ public class Main extends JavaPlugin implements Listener {
         for (String langFileName : supportedLanguages) {
             File langFile = new File(langFolder, langFileName);
             if (!langFile.exists()) {
-                saveResource("lang/" + langFileName, false);
+                saveResource(langurl+"/" + langFileName, false);
                 getLogger().info("释放语言文件: " + langFileName);
 
                 // 检查文件是否成功创建
@@ -228,9 +228,9 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void loadTabConfig() {
-        File tabFile = new File(getDataFolder(), "tab.yml");
+        File tabFile = new File(getDataFolder(), tabname);
         if (!tabFile.exists()) {
-            saveResource("tab.yml", false);
+            saveResource(tabname, false);
         }
         tabConfig = YamlConfiguration.loadConfiguration(tabFile);
     }
@@ -277,20 +277,6 @@ public class Main extends JavaPlugin implements Listener {
 
     public void saveTitlesConfig() {
         saveConfigFile(titlesConfig, titlesFile);
-    }
-
-    public void toggleVanish(Player player) {
-        if (player.hasMetadata("vanished")) {
-            // 解除隐身状态
-            player.removeMetadata("vanished", this);
-            Bukkit.getOnlinePlayers().forEach(p -> p.showPlayer(this, player));
-            player.sendMessage(ChatColor.GREEN + "你现在已取消隐身！");
-        } else {
-            // 设置隐身状态
-            player.setMetadata("vanished", new FixedMetadataValue(this, true));
-            Bukkit.getOnlinePlayers().forEach(p -> p.hidePlayer(this, player));
-            player.sendMessage(ChatColor.GREEN + "你现在已隐身！");
-        }
     }
 
     private void logToConsole(String message) {
