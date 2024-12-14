@@ -7,6 +7,8 @@ commands:
   ftinfo:
     description: 查看插件版本信息
     usage: /ftinfo
+    permission: fandtpa.ftinfo.use
+    permission-message: 你没有权限使用此命令
   tpa:
     description: 请求传送到某个玩家
     usage: /tpa <玩家名>
@@ -99,6 +101,9 @@ commands:
     usage: /papihelp
     permission: fandtpa.papihelp.use
 permissions:
+  fandtpa.ftinfo.use:
+    description: 允许查看插件版本
+    default: op
   fandtpa.titles.set:
     description: 允许玩家设置称号
     default: op
