@@ -21,11 +21,7 @@ public class SetTitleCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!sender.hasPermission("titles.set")) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("settitle_no_permission")));
-            return true;
-        }
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (args.length < 2) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("settitle_usage")));

@@ -4,6 +4,7 @@ import com.fandtpa.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 public class ReloadPortalsCommand implements CommandExecutor {
 
@@ -14,7 +15,7 @@ public class ReloadPortalsCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         plugin.loadPortals();
         sender.sendMessage("传送门配置已重新加载。");
         return true;

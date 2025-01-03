@@ -32,10 +32,6 @@ public class FandTpaCommand implements CommandExecutor, TabCompleter {
 
         switch (args[0].toLowerCase()) {
             case "reload":
-                if (!sender.hasPermission("fandtpa.reload")) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
-                    return true;
-                }
                 plugin.reloadConfig();
                 configManager.reloadMessages();
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fandtpa_reload_success")));

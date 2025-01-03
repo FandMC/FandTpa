@@ -32,7 +32,10 @@ public class papihelpCommand implements CommandExecutor {
                     "%tps%\n" +
                     "%tps1%\n" +
                     "%tps2%\n" +
-                    "%tps3%");
+                    "%tps3%\n" +
+                    "%mspt%\n" +
+                    "%health%\n" +
+                    "%hunger%");
             return true;
         }
         return false;

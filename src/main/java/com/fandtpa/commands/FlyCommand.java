@@ -25,16 +25,9 @@ public class FlyCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            // 切换自己的飞行模式
             toggleFly(player, player);
             return true;
         } else if (args.length == 1) {
-            // 切换其他玩家的飞行模式
-            if (!player.hasPermission("fly.others")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission_others")));
-                return true;
-            }
-
             Player target = Bukkit.getPlayer(args[0]);
             if (target == null || !target.isOnline()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("player_not_found")));

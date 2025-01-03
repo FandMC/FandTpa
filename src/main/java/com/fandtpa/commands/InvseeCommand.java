@@ -26,16 +26,8 @@ public class InvseeCommand implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "只有玩家可以使用这个命令！");
-            return true;
-        }
-
-        Player player = (Player) sender;
-
-        // 权限检查
-        if (!player.hasPermission("fandtpa.invsee.use")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("no_permission")));
             return true;
         }
 

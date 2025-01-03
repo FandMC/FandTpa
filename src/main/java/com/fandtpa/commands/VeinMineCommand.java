@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class VeinMineCommand implements CommandExecutor {
 
     private final Main plugin;
-    private boolean veinMiningEnabled = false; // 默认关闭连锁挖矿
+    private boolean veinMiningEnabled = false;
 
     public VeinMineCommand(Main plugin) {
         this.plugin = plugin;
@@ -20,14 +20,10 @@ public class VeinMineCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (sender instanceof Player && sender.hasPermission("veinmine.toggle")) {
-            toggleVeinMining();
-            String status = isVeinMiningEnabled() ? "开启" : "关闭";
-            sender.sendMessage("连锁挖矿已" + status);
-            return true;
-        }
-        sender.sendMessage("你没有权限使用此命令！");
-        return false;
+        toggleVeinMining();
+        String status = isVeinMiningEnabled() ? "开启" : "关闭";
+        sender.sendMessage("连锁挖矿已" + status);
+        return true;
     }
 
     public boolean isVeinMiningEnabled() {
