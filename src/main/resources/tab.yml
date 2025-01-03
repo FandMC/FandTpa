@@ -1,8 +1,8 @@
 # 是否启用计分板
 enabled: true
 
-#刷新速度
-time : 0
+# 刷新速度
+time: 20
 
 # Tab 页面的头部内容
 header: |
@@ -13,4 +13,4 @@ header: |
 footer: |
   &7当前世界: &a%world%
   &7你的位置: &a%x%, %y%, %z%
-  &7金钱: &a%money% &7| 时间: &a%time%
+  &7金钱: (if %money% >= "1" {echo:"&a%money%"} else {echo:"暂无"}) &7| 时间: &a%time%

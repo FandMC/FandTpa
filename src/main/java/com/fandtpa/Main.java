@@ -4,7 +4,6 @@ import com.fandtpa.manager.ConfigManager;
 import com.fandtpa.manager.Holograms;
 import com.fandtpa.manager.EcoManager;
 import com.fandtpa.manager.OtpManager;
-import com.fandtpa.register.*;
 import com.fandtpa.util.TabListUpdater;
 import com.fandtpa.util.*;
 import org.bukkit.Bukkit;
@@ -24,11 +23,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin implements Listener {
-    public String FandMCVersion = "2.3";
     public FileConfiguration tabConfig;
     private String language;
     private File homesFile;
@@ -41,89 +38,35 @@ public class Main extends JavaPlugin implements Listener {
     private OtpManager otpManager;
     private final Map<Location, PortalData> portalMap = new HashMap<>();
     Holograms holograms;
-    private CreateFile createFileUtil;
     private int maxVeinMineBlocks;
     private final String langurl = "lang";
     private final String tabname = "tab.yml";
     @Override
     public void onEnable() {
         try {
-            a();
-            start();
+            getLogger().info("------------------------------------");
+            maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks", 100); // 默认值为100
+            checkForTabPlugin();
+            this.tabConfig = this.getConfig();
+            otpManager = new OtpManager();
+            configManager = new ConfigManager(this);
+            holograms = new Holograms(this);
+            tabEnabled();
+            String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
+            ecoManager = new EcoManager(dbPath);
+            holograms.loadHolograms();
+            loadTabConfig();
+            loadPortals();
+            startParticleEffects();
+            language();
+            configManager.reloadMessages();
+            loadConfigurationFiles();
+            new Registers(this, configManager, otpManager);
+            new CreateFile(this);
             logToConsole(ChatColor.translateAlternateColorCodes('&',"[Fandtpa] "+ configManager.getMessage("plugin_success")));
-            a();
+            getLogger().info("------------------------------------");
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, configManager.getMessage("error_message").replace("{error}", e.getMessage()), e);
-        }
-    }
-
-    private void start() {
-        maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks", 100); // 默认值为100
-        getcheckupdate();
-        checkForTabPlugin();
-        this.tabConfig = this.getConfig();
-        otpManager = new OtpManager();
-        configManager = new ConfigManager(this);
-        holograms = new Holograms(this);
-        PluginsNo();
-        tabEnabled();
-        String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
-        ecoManager = new EcoManager(dbPath);
-        holograms.loadHolograms();
-        loadTabConfig();
-        createDataFolders();
-        createHomeConfig();
-        createTitlesConfig();
-        loadPortals();
-        startParticleEffects();
-        language();
-        configManager.reloadMessages();
-        loadConfigurationFiles();
-        new Commands(this, configManager);
-        new Listeners(this, otpManager);
-    }
-
-    private void createTitlesConfig() {
-        titlesFile = createFileUtil.createFile("titles.yml");
-    }
-
-    private void createHomeConfig() {
-        homesFile = createFileUtil.createFile("homes.yml");
-    }
-
-    private void a(){
-        getLogger().info("------------------------------------");
-    }
-
-    private void getcheckupdate(){
-        if (!getConfig().contains("checkupdate") || getConfig().get("checkupdate") == null) {
-            getLogger().warning("配置 'checkupdate' 未指定值，默认为 false。");
-            getConfig().set("checkupdate", false); // 设置默认值为 false
-            saveConfig(); // 保存到配置文件
-        }
-
-        // 根据配置决定是否启用更新检查
-        if (getConfig().getBoolean("checkupdate")) {
-            checkupdate();
-        } else {
-            getLogger().info("更新检查已被禁用。");
-        }
-    }
-
-    private void checkupdate() {
-        getLogger().info("当前版本为: " + FandMCVersion);
-        CountDownLatch latch = new CountDownLatch(1);
-
-        CheckUpdate updater = new CheckUpdate(this);
-        new Thread(() -> {
-            updater.check(FandMCVersion);
-            latch.countDown();
-        }).start();
-
-        try {
-            latch.await();
-        } catch (InterruptedException ignored) {
-            getLogger().warning("更新检查线程被中断！");
         }
     }
 
@@ -135,36 +78,13 @@ public class Main extends JavaPlugin implements Listener {
     private void language(){
         language = getConfig().getString("language", "zh_CN");
         getLogger().info("当前语言设置: " + language);
-        loadLanguageFiles();  // 释放并加载语言文件
+        loadLanguageFiles();
     }
 
     private void tabEnabled(){
         if (tabFunctionEnabled) {
             int time = tabConfig.getInt("time", 20); // 从 tab.yml 获取 time 配置项，默认为 20
             new TabListUpdater(this).runTaskTimer(this, 0L, time);
-        }
-    }
-
-    private void PluginsNo(){
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Plugin papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
-            String version = null;
-            if (papi != null) {
-                version = "a"+papi.getDescription().getVersion();
-            }
-
-            if (version != null) {
-                getLogger().info("检测到PlaceholderAPI，PlaceholderAPI版本为:" + ChatColor.translateAlternateColorCodes('&',version) + "，已启用相关功能。");
-            }else{
-                getLogger().info("检测到PlaceholderAPI，但是无法检测到具体版本，变量功能可能会出现问题。");
-            }
-        } else {
-            getLogger().info("未找到PlaceholderAPI，将会启用内置变量。");
-        }
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-            getLogger().info("检测到 Vault 插件，已启用经济支持。");
-        } else {
-            getLogger().info("未检测到 Vault 插件，经济功能将无法使用。");
         }
     }
 
@@ -191,14 +111,6 @@ public class Main extends JavaPlugin implements Listener {
 
     private void loadLanguageFiles() {
         File langFolder = new File(getDataFolder(), langurl);
-        if (!langFolder.exists()) {
-            if (langFolder.mkdirs()) {
-                getLogger().info("创建语言文件夹：" + langFolder.getAbsolutePath());
-            } else {
-                getLogger().severe("无法创建语言文件夹：" + langFolder.getAbsolutePath());
-            }
-        }
-
         String[] supportedLanguages = {"zh_CN.yml", "en_us.yml"};
         for (String langFileName : supportedLanguages) {
             File langFile = new File(langFolder, langFileName);
@@ -233,14 +145,6 @@ public class Main extends JavaPlugin implements Listener {
             saveResource(tabname, false);
         }
         tabConfig = YamlConfiguration.loadConfiguration(tabFile);
-    }
-
-    private void createDataFolders() {
-        createFileUtil = new CreateFile(getLogger(), getDataFolder());
-        // 创建插件的主数据文件夹
-        if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
-            getLogger().severe("插件主数据文件夹创建失败: " + getDataFolder().getPath());
-        }
     }
 
     private void loadConfigurationFiles() {

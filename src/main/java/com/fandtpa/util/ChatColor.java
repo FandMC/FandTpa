@@ -19,12 +19,6 @@ public enum ChatColor {
     YELLOW('e', "§e", "yellow"),
     WHITE('f', "§f", "white"),
 
-    // 自定义颜色
-    ORANGE('g', "§6", "orange"),
-    PINK('h', "§d", "pink"),
-    CYAN('i', "§b", "cyan"),
-    LIME('j', "§a", "lime"),
-
     // 特殊效果
     OBFUSCATED('k', "§k", "obfuscated"), // 乱码效果
     BOLD('l', "§l", "bold"),

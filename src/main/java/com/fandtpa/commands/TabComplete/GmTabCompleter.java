@@ -15,7 +15,7 @@ public class GmTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("0", "1", "2", "3", "survival", "creative", "adventure", "spectator");
+            return Arrays.asList("survival", "creative", "adventure", "spectator");
         } else if (args.length == 2) {
             List<String> playerNames = new ArrayList<>();
             Bukkit.getOnlinePlayers().forEach(player -> playerNames.add(player.getName()));

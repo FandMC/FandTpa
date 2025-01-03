@@ -2,6 +2,7 @@ package com.fandtpa.commands;
 
 import com.fandtpa.util.ChatColor;
 import com.fandtpa.manager.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,19 +19,20 @@ public class SpeedCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_only_player")));
-            return true;
-        }
-
-        if (args.length != 2) {
+        if (args.length < 2 || args.length > 3) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_usage")));
             return true;
         }
 
+        // 检查模式
         String mode = args[0].toLowerCase();
-        double speed;
+        if (!mode.equals("walk") && !mode.equals("fly")) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_usage")));
+            return true;
+        }
 
+        // 检查速度值
+        double speed;
         try {
             speed = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
@@ -43,23 +45,53 @@ public class SpeedCommand implements CommandExecutor {
             return true;
         }
 
+        // 确定目标玩家
+        Player target;
+        if (args.length == 3) {
+            if (!sender.hasPermission("speed.others")) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_no_permission_others")));
+                return true;
+            }
+
+            target = Bukkit.getPlayer(args[2]);
+            if (target == null || !target.isOnline()) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_player_not_found")));
+                return true;
+            }
+        } else {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_only_player")));
+                return true;
+            }
+            target = player;
+        }
+
+        // 设置速度
         switch (mode) {
             case "walk":
-                player.setWalkSpeed((float) speed);
+                target.setWalkSpeed((float) speed);
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_walk_set")
-                        .replace("{speed}", String.valueOf(speed))));
+                        .replace("{speed}", String.valueOf(speed))
+                        .replace("{player}", target.getName())));
+                if (!sender.equals(target)) {
+                    target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_walk_set_other")
+                            .replace("{speed}", String.valueOf(speed))));
+                }
                 break;
+
             case "fly":
-                if (!player.getAllowFlight()) {
+                if (!target.getAllowFlight()) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_fly_not_allowed")));
                     return true;
                 }
-                player.setFlySpeed((float) speed);
+                target.setFlySpeed((float) speed);
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_fly_set")
-                        .replace("{speed}", String.valueOf(speed))));
-                break;
-            default:
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_usage")));
+                        .replace("{speed}", String.valueOf(speed))
+                        .replace("{player}", target.getName())));
+                if (!sender.equals(target)) {
+                    target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_fly_set_other")
+                            .replace("{speed}", String.valueOf(speed))));
+                }
                 break;
         }
 
