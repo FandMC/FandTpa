@@ -47,6 +47,7 @@ public class Registers {
         Objects.requireNonNull(plugin.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(plugin));
         Objects.requireNonNull(plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(plugin));
         Objects.requireNonNull(plugin.getCommand("papihelp")).setExecutor(new papihelpCommand(plugin));
+        Objects.requireNonNull(plugin.getCommand("more")).setExecutor(new MoreCommand());
     }
 
     private void registerTabCompleters() {
