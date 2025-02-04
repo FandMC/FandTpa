@@ -55,7 +55,6 @@ public class HomeCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("home_usage")));
                 break;
         }
-
         return true;
     }
 

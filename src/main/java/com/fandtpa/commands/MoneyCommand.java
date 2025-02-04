@@ -30,8 +30,7 @@ public class MoneyCommand implements CommandExecutor {
         EcoManager ecoManager = plugin.getEcoManager();
         String balance = ecoManager.getBalanceAsString(player.getUniqueId());
 
-        String message = configManager.getMessage("money_balance");
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message.replace("{balance}", balance)));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("money_balance").replace("{balance}", balance)));
         return true;
     }
 }

@@ -11,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class HologramCommand implements CommandExecutor {
 
-    private final Main plugin;
     Holograms holograms;
     private final ConfigManager configManager;
-    public HologramCommand(Main plugin, ConfigManager configManager) {
-        this.plugin = plugin;
+    public HologramCommand(ConfigManager configManager) {
         this.configManager = configManager;
     }
 
@@ -23,7 +21,7 @@ public class HologramCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             holograms.reloadHolograms();
-            sender.sendMessage(ChatColor.GREEN + "Done");
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("Done")));
             return true;
         }
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("hd_usage")));

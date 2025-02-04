@@ -34,22 +34,18 @@ public class GmCommand implements CommandExecutor {
         String modeName;
 
         switch (mode) {
-            case "0":
             case "survival":
                 gameMode = GameMode.SURVIVAL;
                 modeName = configManager.getMessage("gm_survival");
                 break;
-            case "1":
             case "creative":
                 gameMode = GameMode.CREATIVE;
                 modeName = configManager.getMessage("gm_creative");
                 break;
-            case "2":
             case "adventure":
                 gameMode = GameMode.ADVENTURE;
                 modeName = configManager.getMessage("gm_adventure");
                 break;
-            case "3":
             case "spectator":
                 gameMode = GameMode.SPECTATOR;
                 modeName = configManager.getMessage("gm_spectator");

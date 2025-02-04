@@ -31,7 +31,7 @@ public class OtpCommand implements CommandExecutor {
         }
 
         if (!(sender instanceof Player admin)) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("otp_player_only")));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("player_only")));
             return true;
         }
 

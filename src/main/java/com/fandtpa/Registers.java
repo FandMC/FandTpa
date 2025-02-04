@@ -42,11 +42,11 @@ public class Registers {
         Objects.requireNonNull(plugin.getCommand("money")).setExecutor(new MoneyCommand(plugin, configManager));
         Objects.requireNonNull(plugin.getCommand("otp")).setExecutor(new OtpCommand(plugin.getOtpManager(), configManager));
         Objects.requireNonNull(plugin.getCommand("fandtpa")).setExecutor(new FandTpaCommand(plugin, configManager));
-        Objects.requireNonNull(plugin.getCommand("v")).setExecutor(new VanishCommand(plugin));
-        Objects.requireNonNull(plugin.getCommand("hd")).setExecutor(new HologramCommand(plugin, configManager));
-        Objects.requireNonNull(plugin.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(plugin));
+        Objects.requireNonNull(plugin.getCommand("v")).setExecutor(new VanishCommand(plugin,configManager));
+        Objects.requireNonNull(plugin.getCommand("hd")).setExecutor(new HologramCommand(configManager));
+        Objects.requireNonNull(plugin.getCommand("portalsreload")).setExecutor(new ReloadPortalsCommand(plugin,configManager));
         Objects.requireNonNull(plugin.getCommand("toggleVeinMine")).setExecutor(new VeinMineCommand(plugin));
-        Objects.requireNonNull(plugin.getCommand("papihelp")).setExecutor(new papihelpCommand(plugin));
+        Objects.requireNonNull(plugin.getCommand("papihelp")).setExecutor(new papihelpCommand());
         Objects.requireNonNull(plugin.getCommand("more")).setExecutor(new MoreCommand());
     }
 
@@ -58,9 +58,9 @@ public class Registers {
     }
 
     private void registerListeners() {
-        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(plugin), plugin);
         BackCommand backCommand = new BackCommand(plugin.getLogger(), plugin.getConfigManager());
         Bukkit.getPluginManager().registerEvents(backCommand, plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(otpManager), plugin);
         Bukkit.getPluginManager().registerEvents(new PortalListener(plugin), plugin);
     }

@@ -27,7 +27,6 @@ commands:
     description: 为玩家设置称号
     usage: /settitle <玩家> <称号>
     permission: fandtpa.titles.set
-    permission-message: 你没有权限使用此命令
   suicide:
     description: 自杀
   invsee:
@@ -57,7 +56,6 @@ commands:
   speed:
     description: Set the speed of the player
     usage: /speed <fly|walk> <speed>
-    aliases: [ sp ]
     permission: fandtpa.speed.use
   eco:
     description: 管理玩家经济

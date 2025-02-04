@@ -38,7 +38,6 @@ public class FlyCommand implements CommandExecutor {
             return true;
         }
 
-        // 参数过多
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("command_usage_fly")));
         return true;
     }
@@ -47,11 +46,9 @@ public class FlyCommand implements CommandExecutor {
         boolean canFly = target.getAllowFlight();
         target.setAllowFlight(!canFly);
 
-        // 通知目标玩家
         target.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fly_toggle")
                 .replace("{status}", canFly ? configManager.getMessage("fly_disabled") : configManager.getMessage("fly_enabled"))));
 
-        // 如果是给他人切换，通知执行者
         if (!sender.equals(target)) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("fly_toggle_other")
                     .replace("{player}", target.getName())

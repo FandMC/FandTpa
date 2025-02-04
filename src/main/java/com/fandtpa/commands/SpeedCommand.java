@@ -24,14 +24,12 @@ public class SpeedCommand implements CommandExecutor {
             return true;
         }
 
-        // 检查模式
         String mode = args[0].toLowerCase();
         if (!mode.equals("walk") && !mode.equals("fly")) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', configManager.getMessage("speed_usage")));
             return true;
         }
 
-        // 检查速度值
         double speed;
         try {
             speed = Double.parseDouble(args[1]);
@@ -45,7 +43,6 @@ public class SpeedCommand implements CommandExecutor {
             return true;
         }
 
-        // 确定目标玩家
         Player target;
         if (args.length == 3) {
             if (!sender.hasPermission("speed.others")) {
@@ -66,7 +63,6 @@ public class SpeedCommand implements CommandExecutor {
             target = player;
         }
 
-        // 设置速度
         switch (mode) {
             case "walk":
                 target.setWalkSpeed((float) speed);

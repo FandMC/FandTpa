@@ -28,7 +28,6 @@ public class TprandomCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e正在寻找安全的位置，请稍候..."));
 
-            // 添加短暂的失明效果
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1, false, false));
 
             new BukkitRunnable() {
@@ -39,21 +38,17 @@ public class TprandomCommand implements CommandExecutor {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                // 传送玩家到安全位置
                                 player.teleport(randomLocation);
 
-                                // 发送成功消息并显示坐标
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                         "&a你已经被随机传送到安全位置！位置: &bX: " + randomLocation.getBlockX()
                                                 + " Y: " + randomLocation.getBlockY()
                                                 + " Z: " + randomLocation.getBlockZ()));
 
-                                // 在玩家传送后触发白烟效果
                                 spawnSmokeEffect(player.getLocation());
                             }
                         }.runTask(plugin);
                     } else {
-                        // 如果找不到安全位置，提醒玩家失败
                         new BukkitRunnable() {
                             @Override
                             public void run() {

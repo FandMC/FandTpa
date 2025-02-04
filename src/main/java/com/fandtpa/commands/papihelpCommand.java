@@ -11,14 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class papihelpCommand implements CommandExecutor {
 
-    private final JavaPlugin plugin;
-
-    // 构造函数，传递插件实例
-    public papihelpCommand(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public papihelpCommand() {
     }
 
-    // 当执行 /ftinfo 时，这个方法会被调用
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("papihelpCommand")) {

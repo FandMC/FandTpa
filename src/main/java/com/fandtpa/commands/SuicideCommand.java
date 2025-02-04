@@ -33,7 +33,7 @@ public class SuicideCommand implements CommandExecutor {
     private void forcePlayerDeath(Player player) {
         player.setHealth(0);
         if (!player.isDead()) {
-            player.damage(10000); // 给予大额伤害确保玩家死亡
+            player.damage(10000);
         }
     }
 }
