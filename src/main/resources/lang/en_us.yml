@@ -109,4 +109,8 @@ speed_walk_set_other: "&aYour walking speed has been set to {speed}."
 speed_fly_set_other: "&aYour flying speed has been set to {speed}."
 speed_fly_not_allowed: "&cThe target player is not allowed to fly, so flight speed cannot be set."
 done: "&adone"
-portals_reload: "&aPortal configuration has been reloaded! !"
+portals_reload: "&aPortal configuration has been reloaded!"
+deltitle_usage: '&cUsage: /deltitle <player>'
+deltitle_player_not_found: '&cPlayer {player} is not online or does not exist.'
+deltitle_success: '&aSuccessfully removed the title of {player}.'
+deltitle_received: '&aYour title has been removed.'

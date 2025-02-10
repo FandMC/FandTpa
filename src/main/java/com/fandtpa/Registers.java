@@ -30,6 +30,7 @@ public class Registers {
         Objects.requireNonNull(plugin.getCommand("home")).setExecutor(new HomeCommand(plugin, configManager));
         Objects.requireNonNull(plugin.getCommand("back")).setExecutor(new BackCommand(plugin.getLogger(), configManager));
         Objects.requireNonNull(plugin.getCommand("settitle")).setExecutor(new SetTitleCommand(plugin, configManager));
+        Objects.requireNonNull(plugin.getCommand("deltitle")).setExecutor(new DelTitleCommand(plugin, configManager));
         Objects.requireNonNull(plugin.getCommand("suicide")).setExecutor(new SuicideCommand(configManager));
         Objects.requireNonNull(plugin.getCommand("rtp")).setExecutor(new TprandomCommand(plugin));
         Objects.requireNonNull(plugin.getCommand("invsee")).setExecutor(new InvseeCommand(configManager));

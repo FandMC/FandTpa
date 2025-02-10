@@ -110,3 +110,7 @@ speed_fly_set_other: "&a你的飞行速度被设置为 {speed}。"
 speed_fly_not_allowed: "&c目标玩家当前不允许飞行，无法设置飞行速度。"
 done: "&a完成"
 portals_reload: "&a传送门配置已重新加载!"
+deltitle_usage: '&c使用方法：/deltitle <player>'
+deltitle_player_not_found: '&c玩家 {player} 不在线或不存在。'
+deltitle_success: '&a成功删除了 {player} 的称号。'
+deltitle_received: '&a你的称号已被删除。'

@@ -97,9 +97,16 @@ commands:
     description: 设置手上物品数量为64
     usage: /more
     permission: fandtpa.more.use
+  deltitle:
+    description: 删除玩家的称号
+    usage: /deltitle <player>
+    permission: fandtpa.command.del
 permissions:
   fandtpa.titles.set:
     description: 允许玩家设置称号
+    default: op
+  fandtpa.titles.del:
+    description: 允许玩家删除称号
     default: op
   fandtpa.more.set:
     description: 允许设置手上物品数量为64
