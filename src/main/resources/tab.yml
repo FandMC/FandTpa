@@ -13,4 +13,4 @@ header: |
 footer: |
   &7当前世界: &a%world%
   &7你的位置: &a%x%, %y%, %z%
-  &7金钱: (if %money% >= "1" {echo:"&a%money%"} else {echo:"暂无"}) &7| 时间: &a%time%
+  &7金钱: &a%money%" &7| 时间: &a%time%

@@ -39,8 +39,7 @@ public class Main extends JavaPlugin implements Listener {
     private final Map<Location, PortalData> portalMap = new HashMap<>();
     Holograms holograms;
     private int maxVeinMineBlocks;
-    private final String langurl = "lang";
-    private final String tabname = "tab.yml";
+
     @Override
     public void onEnable() {
         try {
@@ -51,6 +50,16 @@ public class Main extends JavaPlugin implements Listener {
             otpManager = new OtpManager();
             configManager = new ConfigManager(this);
             holograms = new Holograms(this);
+
+            homesFile = new File(getDataFolder(), "homes.yml");
+            if (!homesFile.exists()) {
+                saveResource("homes.yml", false);
+            }
+            titlesFile = new File(getDataFolder(), "titles.yml");
+            if (!titlesFile.exists()) {
+                saveResource("titles.yml", false);
+            }
+
             tabEnabled();
             String dbPath = getDataFolder().getAbsolutePath() + "/economy.db";
             ecoManager = new EcoManager(dbPath);
@@ -110,12 +119,13 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void loadLanguageFiles() {
+        String langurl = "lang";
         File langFolder = new File(getDataFolder(), langurl);
         String[] supportedLanguages = {"zh_CN.yml", "en_us.yml"};
         for (String langFileName : supportedLanguages) {
             File langFile = new File(langFolder, langFileName);
             if (!langFile.exists()) {
-                saveResource(langurl+"/" + langFileName, false);
+                saveResource(langurl +"/" + langFileName, false);
                 getLogger().info("释放语言文件: " + langFileName);
 
                 // 检查文件是否成功创建
@@ -140,6 +150,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void loadTabConfig() {
+        String tabname = "tab.yml";
         File tabFile = new File(getDataFolder(), tabname);
         if (!tabFile.exists()) {
             saveResource(tabname, false);
