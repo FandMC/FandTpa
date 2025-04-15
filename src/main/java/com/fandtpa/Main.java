@@ -44,7 +44,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onEnable() {
         try {
             getLogger().info("------------------------------------");
-            maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks", 100); // 默认值为100
+            maxVeinMineBlocks = getConfig().getInt("max_vein_mine_blocks");
             checkForTabPlugin();
             this.tabConfig = this.getConfig();
             otpManager = new OtpManager();
