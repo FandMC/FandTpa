@@ -11,14 +11,10 @@ public class CreateFile {
     private final Logger logger;
     private final File dataFolder;
 
-    // 构造函数，初始化 logger 和 dataFolder，并自动调用文件创建方法
     public CreateFile(JavaPlugin plugin) {
-        this.logger = plugin.getLogger();         // 使用插件的 logger
-        this.dataFolder = plugin.getDataFolder(); // 使用插件的 dataFolder
-        createDataFolders(); // 初始化数据文件夹
-
-        // 自动调用创建配置文件的方法
-        createTitlesConfig();
+        this.logger = plugin.getLogger();
+        this.dataFolder = plugin.getDataFolder();
+        createDataFolders();
         createHomeConfig();
     }
 
@@ -30,11 +26,9 @@ public class CreateFile {
         return this.logger;
     }
 
-    // 创建文件
     public void createFile(String fileName) {
         File file = new File(getDataFolder(), fileName);
 
-        // 检查文件是否存在，若不存在则创建
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
@@ -51,7 +45,6 @@ public class CreateFile {
     }
 
     private void createDataFolders() {
-        // 创建插件的工作目录
         if (!getDataFolder().exists()) {
             if (getDataFolder().mkdirs()) {
                 getLogger().info("插件主数据文件夹创建成功: " + getDataFolder().getPath());
@@ -70,12 +63,6 @@ public class CreateFile {
         }
     }
 
-    // 创建标题配置文件
-    private void createTitlesConfig() {
-        createFile("titles.yml");
-    }
-
-    // 创建主界面配置文件
     private void createHomeConfig() {
         createFile("homes.yml");
     }

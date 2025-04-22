@@ -1,3 +1,1 @@
 language: zh_CN # 选项: en_us, zh_cn
-max_vein_mine_blocks: 100  # 设置最大连锁数量
-checkupdate: false

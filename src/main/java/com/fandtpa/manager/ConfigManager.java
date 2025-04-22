@@ -14,7 +14,7 @@ public class ConfigManager {
     private final Main plugin;
     private final Logger logger;
     private final Map<String, String> messages = new HashMap<>();
-    private String language;
+    public static String language;
     public void reloadMessages() {
         messages.clear();
         loadMessages();
@@ -28,7 +28,7 @@ public class ConfigManager {
 
     private void loadConfig() {
         plugin.saveDefaultConfig();
-        language = plugin.getConfig().getString("language", "zh_CN");
+        language = plugin.getConfig().getString("language");
     }
 
     private void loadMessages() {

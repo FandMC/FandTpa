@@ -1,8 +1,8 @@
 folia-supported: true
 name: Fandtpa
-version: 3.0
+version: 3.1
 main: com.fandtpa.Main
-api-version: '1.18'
+api-version: '1.21'
 commands:
   tpa:
     description: 请求传送到某个玩家
@@ -16,6 +16,9 @@ commands:
   tpahere:
     description: 请求其他玩家传送到你这里
     usage: /tpahere <玩家名>
+  rtp:
+    description: 随机传送
+    usage: /rtp
   home:
     description: 家的管理命令
     usage: /home <set/tp/del/list> <家名>
@@ -23,139 +26,3 @@ commands:
   back:
     description: 传送到上一次死亡地点
     usage: /back
-  settitle:
-    description: 为玩家设置称号
-    usage: /settitle <玩家> <称号>
-    permission: fandtpa.titles.set
-  suicide:
-    description: 自杀
-  invsee:
-    description: 查看其他玩家的背包
-    usage: /invsee <玩家名>
-    permission: fandtpa.invsee.use
-  hat:
-    description: 将手中的物品戴在头上
-    usage: /hat
-    permission: fandtpa.hat.use
-  rtp:
-    description: 随机传送
-    usage: /rtp
-    permission: fandtpa.rtp.use
-  fly:
-    description: 切换飞行模式
-    usage: /fly
-    permission: fandtpa.fly.use
-  gm:
-    description: 快速切换游戏模式
-    usage: /gm <模式>
-    permission: fandtpa.gm.use
-  tab:
-    description: 重新加载TAB配置
-    usage: /tab reload
-    permission: fandtpa.tab.reload
-  speed:
-    description: Set the speed of the player
-    usage: /speed <fly|walk> <speed>
-    permission: fandtpa.speed.use
-  eco:
-    description: 管理玩家经济
-    usage: /eco <set|add|take> <玩家> <金额>
-    permission: fandtpa.eco.use
-  money:
-    description: 获取玩家当前的金钱
-    usage: /money
-    permission: fandtpa.money.use
-  otp:
-    description: 将玩家传送到上一次退出的位置
-    usage: /otp
-    permission: fandtpa.otp.use
-  fandtpa:
-    description: Main command for FandTPA plugin
-    usage: /fandtpa <reload|help>
-    permission: fandtpa.reload
-  v:
-    description: 隐身
-    usage: /v
-    permission: fandtpa.v.use
-  hd:
-    description: 重载全息字
-    usage: /hd reload
-    permission: fandtpa.hd.reload
-  portalsreload:
-    description: 重载传送门
-    usage: /portalsreload
-    permission: fandtpa.portalsreload.use
-  toggleVeinMine:
-    description: 连锁挖矿
-    usage: /toggleVeinMine
-    permission: fandtpa.toggleVeinMine.use
-  papihelp:
-    description: 查询变量
-    usage: /papihelp
-    permission: fandtpa.papihelp.use
-  more:
-    description: 设置手上物品数量为64
-    usage: /more
-    permission: fandtpa.more.use
-  deltitle:
-    description: 删除玩家的称号
-    usage: /deltitle <player>
-    permission: fandtpa.command.del
-permissions:
-  fandtpa.titles.set:
-    description: 允许玩家设置称号
-    default: op
-  fandtpa.titles.del:
-    description: 允许玩家删除称号
-    default: op
-  fandtpa.more.set:
-    description: 允许设置手上物品数量为64
-    default: op
-  fandtpa.invsee.use:
-    description: 允许查看其他玩家背包
-    default: op
-  fandtpa.fly.use:
-    description: 允许玩家飞行
-    default: op
-  fandtpa.rtp.use:
-    description: 允许玩家随机传送
-    default: op
-  fandtpa.gm.use:
-    description: 快捷切换游戏模式
-    default: op
-  fandtpa.hat.use:
-    description: 允许玩家将手中的物品戴到头上
-    default: op
-  fandtpa.tab.reload:
-    description: 允许重新加载TAB配置
-    default: op
-  fandtpa.speed.use:
-    description: 允许修改速度
-    default: op
-  fandtpa.eco.use:
-    description: 允许修改金钱
-    default: op
-  fandtpa.money.use:
-    description: 允许获取金钱
-    default: op
-  fandtpa.otp.use:
-    description: 允许回到玩家退出前的位置
-    default: op
-  fandtpa.reload:
-    description: 重载插件
-    default: op
-  fandtpa.v.use:
-    description: 允许隐身
-    default: op
-  fandtpa.hd.reload:
-    description: 允许重载悬浮字
-    default: op
-  fandtpa.portalsreload.use:
-    description: 允许重载传送门
-    default: op
-  fandtpa.toggleVeinMine.set:
-    description: 连锁挖矿权限
-    default: op
-  fandtpa.papihelp.set:
-    description: 查询变量权限
-    default: op
